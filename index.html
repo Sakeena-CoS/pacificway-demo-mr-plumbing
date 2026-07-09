@@ -1,457 +1,990 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>M&amp;R Plumbing and Heating — Langford, BC</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M&amp;R Plumbing &amp; Heating — Langford, BC | 24/7 Emergency Service</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0d1b2a;
-      --fg: #ffffff;
-      --accent: #e07b39;
-      --accent2: #1e5fa0;
-      --surface: #132236;
-      --muted: color-mix(in srgb, var(--fg) 55%, transparent);
-      --border: color-mix(in srgb, var(--fg) 12%, transparent);
-      --card: color-mix(in srgb, var(--surface) 80%, var(--bg));
+      --bg:           #060d1b;
+      --surface:      #0b1828;
+      --card:         #0e1f38;
+      --copper:       #c8773a;
+      --copper-lt:    #e8a060;
+      --copper-dk:    #8b4f20;
+      --water:        #0ea5e9;
+      --water-dim:    rgba(14,165,233,0.25);
+      --steel:        #4b6180;
+      --muted:        #8faabb;
+      --fg:           #e8f2ff;
+      --border:       rgba(255,255,255,0.07);
+      --card-glow:    rgba(200,119,58,0.11);
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
+    html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
       color: var(--fg);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       line-height: 1.6;
       overflow-x: hidden;
     }
-    a { color: var(--accent); text-decoration: none; }
-    img, svg { display: block; }
 
+    /* ── PIPE GRID BACKGROUND ─────────────────────────────────── */
+    .pipe-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      overflow: hidden; opacity: 0.14;
+    }
+    .pipe-bg svg { width: 100%; height: 100%; }
+    .pl { stroke: #c8773a; stroke-width: 2; fill: none;
+          stroke-dasharray: 22 10;
+          animation: pflow 5s linear infinite; }
+    .pw { stroke: #0ea5e9; stroke-width: 1.5; fill: none;
+          stroke-dasharray: 10 26; opacity: .75;
+          animation: pflow 3s linear infinite; }
+    @keyframes pflow { to { stroke-dashoffset: -96; } }
+    .pj { fill: #c8773a; }
+
+    /* ── PARTICLE DROPS ───────────────────────────────────────── */
+    #drops { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .drop {
+      position: absolute; border-radius: 50%;
+      background: linear-gradient(180deg, transparent 0%, #0ea5e9 100%);
+      animation: dfal linear infinite; opacity: 0;
+    }
+    @keyframes dfal {
+      0%   { transform: translateY(-20px); opacity: 0; }
+      8%   { opacity: .55; }
+      92%  { opacity: .35; }
+      100% { transform: translateY(102vh); opacity: 0; }
+    }
+
+    /* ── NAV ──────────────────────────────────────────────────── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 400;
       display: flex; align-items: center; justify-content: space-between;
       padding: 1rem 2rem;
-      background: color-mix(in srgb, var(--bg) 80%, transparent);
-      backdrop-filter: blur(16px) saturate(1.4);
+      background: rgba(6,13,27,.82);
+      backdrop-filter: blur(22px) saturate(1.6);
       border-bottom: 1px solid var(--border);
     }
-    .nav-logo { font-size: 1.05rem; font-weight: 800; color: var(--fg); letter-spacing: -0.02em; }
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
-    .nav-links a { font-size: 0.9rem; color: var(--muted); font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--fg); }
-    .nav-cta {
-      background: var(--accent); color: #fff !important;
-      padding: 0.55rem 1.3rem; border-radius: 8px;
-      font-size: 0.88rem; font-weight: 700; transition: opacity 0.2s, transform 0.15s;
+    .nbrand { display: flex; align-items: center; gap: .75rem; }
+    .nlogo  { width: 38px; height: 38px; flex-shrink: 0; }
+    .nname  { font-family: 'Space Grotesk', sans-serif;
+              font-size: 1rem; font-weight: 700; color: var(--fg);
+              letter-spacing: -.02em; line-height: 1.2; }
+    .nname span { color: var(--copper); }
+    .nlinks { display: flex; align-items: center; gap: 1.75rem; }
+    .nlinks a { font-size: .85rem; color: var(--muted); text-decoration: none;
+                font-weight: 500; transition: color .2s; }
+    .nlinks a:hover { color: var(--fg); }
+    .ncta {
+      background: var(--copper) !important; color: #fff !important;
+      padding: .52rem 1.25rem; border-radius: 8px;
+      font-size: .85rem; font-weight: 700; transition: all .2s;
+      text-decoration: none !important;
     }
-    .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
-    @media (max-width: 600px) { .nav-links .hide-mobile { display: none; } }
+    .ncta:hover { background: var(--copper-lt) !important; transform: translateY(-1px); }
+    @media (max-width: 640px) {
+      .nlinks .hms { display: none; }
+      nav { padding: .75rem 1.25rem; }
+    }
 
+    /* ── HERO ─────────────────────────────────────────────────── */
     .hero {
-      min-height: 100svh;
-      display: flex; align-items: center; justify-content: center;
-      text-align: center;
-      padding: 9rem 2rem 6rem;
-      position: relative; overflow: hidden;
+      min-height: 100svh; position: relative;
+      display: flex; align-items: center;
+      padding: 7rem 2rem 5rem; overflow: hidden;
     }
-    .hero-bg {
+    .h-atm {
       position: absolute; inset: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 90% 70% at 50% -10%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 65%),
-        radial-gradient(ellipse 50% 40% at 90% 90%, color-mix(in srgb, var(--accent2) 22%, transparent), transparent 65%),
-        radial-gradient(ellipse 40% 30% at 5% 70%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 65%);
+        radial-gradient(ellipse 80% 65% at 50% -8%, rgba(200,119,58,.25) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 55% at 88% 88%, rgba(14,165,233,.16) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 10% 65%, rgba(200,119,58,.09) 0%, transparent 55%);
     }
-    .hero-dots {
+    .h-grid {
       position: absolute; inset: 0; pointer-events: none;
-      background-image: radial-gradient(circle, color-mix(in srgb, var(--fg) 8%, transparent) 1px, transparent 1px);
-      background-size: 28px 28px;
+      background-image:
+        linear-gradient(rgba(200,119,58,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,119,58,.035) 1px, transparent 1px);
+      background-size: 64px 64px;
     }
-    .hero-content { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: color-mix(in srgb, var(--accent) 14%, transparent);
-      border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-      color: var(--accent); font-size: 0.75rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 0.4rem 1.1rem; border-radius: 100px; margin-bottom: 1.75rem;
+    .h-inner {
+      position: relative; z-index: 2;
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
     }
-    h1 {
-      font-size: clamp(3rem, 9vw, 6rem);
-      font-weight: 900; letter-spacing: -0.04em; line-height: 1.0;
+    @media (max-width: 768px) {
+      .h-inner { grid-template-columns: 1fr; }
+      .h-vis   { display: none; }
+    }
+
+    .ebadge {
+      display: inline-flex; align-items: center; gap: .55rem;
+      background: rgba(14,165,233,.1);
+      border: 1px solid rgba(14,165,233,.28);
+      color: var(--water); font-size: .7rem;
+      font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: .38rem 1rem; border-radius: 100px; margin-bottom: 1.5rem;
+    }
+    .pdot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--water);
+      animation: pdot 1.6s ease-in-out infinite;
+    }
+    @keyframes pdot {
+      0%,100% { box-shadow: 0 0 0 0 rgba(14,165,233,.65); }
+      50%      { box-shadow: 0 0 0 7px rgba(14,165,233,0); }
+    }
+
+    .htitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+      font-weight: 800; letter-spacing: -.045em; line-height: 1.0;
       margin-bottom: 1.25rem;
-      background: linear-gradient(160deg, var(--fg) 20%, var(--accent) 110%);
+    }
+    .tc {
+      background: linear-gradient(135deg, var(--copper-lt) 0%, var(--copper) 50%, var(--copper-dk) 100%);
       -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent; color: var(--accent);
+      -webkit-text-fill-color: transparent;
     }
-    .hero-sub {
-      font-size: clamp(1.05rem, 2.5vw, 1.3rem);
-      color: var(--muted); max-width: 580px;
-      margin: 0 auto 2.75rem; line-height: 1.75;
+    .tw {
+      background: linear-gradient(135deg, #bae6fd 0%, var(--water) 65%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    .hsub {
+      font-size: clamp(1rem, 2.2vw, 1.2rem); color: var(--muted);
+      line-height: 1.82; margin-bottom: 2.5rem; max-width: 460px;
+    }
+    .hsub strong { color: var(--fg); }
+
+    .hact { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.25rem; }
     .btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.9rem 1.9rem; border-radius: 10px;
-      font-size: 0.98rem; font-weight: 700; transition: all 0.2s; cursor: pointer;
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .9rem 1.85rem; border-radius: 10px;
+      font-size: .95rem; font-weight: 700; font-family: inherit;
+      text-decoration: none; transition: all .25s; cursor: pointer; border: none;
     }
-    .btn-primary { background: var(--accent); color: #fff; border: none; }
-    .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 35%, transparent); }
-    .btn-ghost { background: transparent; color: var(--fg); border: 1px solid var(--border); }
-    .btn-ghost:hover { background: var(--surface); transform: translateY(-2px); }
+    .btnp {
+      background: var(--copper); color: #fff;
+      box-shadow: 0 4px 26px rgba(200,119,58,.38);
+    }
+    .btnp:hover { background: var(--copper-lt); transform: translateY(-2px);
+                  box-shadow: 0 10px 34px rgba(200,119,58,.52); }
+    .btng {
+      background: rgba(255,255,255,.05); color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .btng:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
 
-    .stats {
-      background: var(--surface);
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      padding: 2.25rem 2rem;
-      display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
-    }
-    .stat-item {
-      text-align: center; padding: 0.75rem 3rem;
-      border-right: 1px solid var(--border);
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-number { font-size: 2.25rem; font-weight: 900; color: var(--accent); letter-spacing: -0.04em; line-height: 1; }
-    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
-    @media (max-width: 640px) { .stat-item { padding: 0.75rem 1.5rem; border-right: none; } }
+    .htrust { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .tch { display: flex; align-items: center; gap: .4rem;
+           font-size: .78rem; color: var(--muted); }
+    .tch svg { color: var(--copper); flex-shrink: 0; }
 
-    section { padding: 7rem 2rem; }
-    .container { max-width: 1100px; margin: 0 auto; }
-    .section-label {
-      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem;
+    /* Hero illustration */
+    .h-vis { display: flex; justify-content: center; align-items: center; }
+    .h-vis-wrap {
+      position: relative; width: 440px; height: 440px;
     }
-    h2 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
-    .section-sub { font-size: 1.05rem; color: var(--muted); max-width: 540px; line-height: 1.75; margin-bottom: 3.5rem; }
+    /* Glow halo behind the illustration */
+    .h-vis-wrap::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 340px; height: 340px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,119,58,.18) 0%, transparent 70%);
+      animation: halo 4s ease-in-out infinite alternate;
+    }
+    @keyframes halo {
+      from { opacity: .6; transform: translate(-50%,-50%) scale(1); }
+      to   { opacity: 1;  transform: translate(-50%,-50%) scale(1.12); }
+    }
 
-    #services { background: var(--surface); }
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.25rem; }
-    .service-card {
-      background: var(--bg);
-      border: 1px solid var(--border); border-radius: 18px;
-      padding: 2rem 1.75rem;
-      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    /* ── URGENCY STRIP ────────────────────────────────────────── */
+    .ustrip {
+      position: relative; z-index: 2;
+      background: linear-gradient(135deg, rgba(200,119,58,.15), rgba(200,119,58,.07));
+      border-top: 1px solid rgba(200,119,58,.2);
+      border-bottom: 1px solid rgba(200,119,58,.2);
+      padding: .9rem 2rem; text-align: center;
+      font-size: .84rem; color: var(--copper-lt); letter-spacing: .04em;
+      display: flex; align-items: center; justify-content: center; gap: .75rem;
+      flex-wrap: wrap;
     }
-    .service-card:hover {
-      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-      transform: translateY(-5px);
-      box-shadow: 0 16px 40px color-mix(in srgb, var(--accent) 12%, transparent);
-    }
-    .service-icon {
-      width: 52px; height: 52px;
-      background: color-mix(in srgb, var(--accent) 14%, transparent);
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 1.25rem; color: var(--accent);
-    }
-    .service-icon svg { width: 26px; height: 26px; }
-    .service-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
-    .service-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+    .ustrip-sep { color: rgba(200,119,58,.35); }
 
-    #about { padding: 7rem 2rem; }
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
-    @media (max-width: 780px) { .about-grid { grid-template-columns: 1fr; gap: 3rem; } }
-    .about-text h2 { margin-bottom: 1.25rem; }
-    .about-text p { color: var(--muted); line-height: 1.85; margin-bottom: 1.5rem; font-size: 1.02rem; }
-    .about-visual {
-      background: var(--surface);
-      border: 1px solid var(--border); border-radius: 24px;
-      aspect-ratio: 4/3;
-      display: flex; align-items: center; justify-content: center;
+    /* ── LAYOUT HELPERS ───────────────────────────────────────── */
+    section { position: relative; z-index: 2; }
+    .ct { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+    .slabel {
+      font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--copper); font-weight: 700; margin-bottom: .7rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .slabel::before { content:''; display:block; width:22px; height:2px; background:var(--copper); }
+    .stitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 800; letter-spacing: -.035em; line-height: 1.05;
+      margin-bottom: .9rem;
+    }
+    .ssub { color: var(--muted); font-size: 1.05rem; max-width: 490px;
+            line-height: 1.78; margin-bottom: 3.5rem; }
+
+    /* ── SERVICES ─────────────────────────────────────────────── */
+    .svcs { padding: 7rem 0; }
+    .svcs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.5rem;
+    }
+    .sc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px; padding: 2rem;
       position: relative; overflow: hidden;
+      transition: all .3s ease; cursor: default;
     }
-    .about-visual-bg {
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 40% 40%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%);
+    .sc::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(circle at 50% 0%, var(--card-glow), transparent 65%);
+      opacity: 0; transition: opacity .3s;
     }
-    .about-visual svg { position: relative; z-index: 1; width: 55%; height: 55%; color: var(--accent); }
+    .sc:hover { border-color: rgba(200,119,58,.38); transform: translateY(-5px);
+                box-shadow: 0 20px 52px rgba(0,0,0,.45); }
+    .sc:hover::before { opacity: 1; }
 
-    #testimonials { background: var(--surface); }
-    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-    .testimonial-card {
-      background: var(--bg);
-      border: 1px solid var(--border); border-radius: 18px;
-      padding: 2rem; display: flex; flex-direction: column; gap: 1rem;
+    .sci {
+      width: 54px; height: 54px;
+      background: rgba(200,119,58,.1); border: 1px solid rgba(200,119,58,.2);
+      border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem; transition: all .3s;
     }
-    .stars { color: var(--accent); font-size: 0.95rem; letter-spacing: 0.12em; }
-    .testimonial-text { font-size: 0.95rem; color: var(--muted); line-height: 1.75; font-style: italic; flex: 1; }
-    .testimonial-author { font-size: 0.82rem; font-weight: 800; color: var(--fg); letter-spacing: 0.02em; }
+    .sc:hover .sci { background: rgba(200,119,58,.2); border-color: rgba(200,119,58,.4); }
+    .sci svg { color: var(--copper); }
 
-    #booking { text-align: center; }
-    .booking-wrap { max-width: 680px; margin: 0 auto; }
-    .booking-card {
+    .scn { font-family: 'Space Grotesk', sans-serif;
+           font-size: 1.1rem; font-weight: 700; margin-bottom: .55rem; }
+    .scd { font-size: .88rem; color: var(--muted); line-height: 1.72; }
+
+    .sc-bar {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--copper), var(--water), var(--copper));
+      background-size: 200% 100%;
+      opacity: 0; transition: opacity .3s;
+      animation: shimmer 3s linear infinite;
+    }
+    .sc:hover .sc-bar { opacity: 1; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ── STATS ────────────────────────────────────────────────── */
+    .stats {
+      padding: 5rem 0;
       background: var(--surface);
-      border: 1px solid var(--border); border-radius: 24px;
-      padding: 2.5rem; margin-top: 2.5rem;
-    }
-    .booking-card h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.4rem; }
-    .booking-card > p { font-size: 0.9rem; color: var(--muted); margin-bottom: 1.75rem; }
-    .slots-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; text-align: left; }
-    .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1.75rem; }
-    .slot {
-      padding: 0.7rem 0.5rem; border: 1px solid var(--border); border-radius: 10px;
-      font-size: 0.85rem; font-weight: 600; cursor: pointer;
-      background: var(--bg); color: var(--muted);
-      transition: all 0.18s; text-align: center;
-    }
-    .slot:hover { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
-    .slot.active { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 18%, transparent); }
-    .booking-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 520px) { .booking-form { grid-template-columns: 1fr; } .time-slots { grid-template-columns: repeat(2,1fr); } }
-    .form-group { text-align: left; }
-    .form-group.full { grid-column: 1 / -1; }
-    .form-group label {
-      display: block; font-size: 0.72rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 0.45rem;
-    }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 0.75rem 1rem;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 10px; color: var(--fg); font-size: 0.95rem;
-      font-family: inherit; transition: border-color 0.2s, box-shadow 0.2s;
-      appearance: none;
-    }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      outline: none; border-color: var(--accent);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
-    }
-    .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
-    .btn-submit { width: 100%; padding: 0.95rem; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; }
-    .btn-submit:hover { opacity: 0.88; transform: translateY(-2px); }
-    .confirm-msg {
-      display: none; margin-top: 1.5rem; padding: 1.1rem 1.5rem;
-      background: color-mix(in srgb, var(--accent) 14%, transparent);
-      border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-      border-radius: 12px; color: var(--accent);
-      font-weight: 700; font-size: 0.95rem;
-    }
-
-    #contact { background: var(--surface); }
-    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2.5rem; }
-    .contact-block-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
-    .contact-block-value { font-size: 1.05rem; color: var(--fg); line-height: 1.6; }
-    .contact-block-value a { color: var(--fg); }
-    .contact-block-value a:hover { color: var(--accent); }
-
-    footer {
-      padding: 2.5rem 2rem; text-align: center;
       border-top: 1px solid var(--border);
-      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
     }
-    .footer-logo { font-size: 1.05rem; font-weight: 800; color: var(--fg); margin-bottom: 0.25rem; }
-    .footer-sub { font-size: 0.8rem; color: var(--muted); }
-    .footer-sub a { color: var(--accent); }
+    .stats-g {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 2.5rem; text-align: center;
+    }
+    .stn {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+      font-weight: 800; letter-spacing: -.05em; line-height: 1;
+      background: linear-gradient(135deg, var(--copper-lt), var(--copper));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: .45rem;
+    }
+    .stl { font-size: .82rem; color: var(--muted); font-weight: 500;
+           text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── CONTACT / FORM ───────────────────────────────────────── */
+    .contacts { padding: 7rem 0; }
+    .contacts-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: start;
+    }
+    @media (max-width: 768px) {
+      .contacts-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+
+    .fcard {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 2.5rem;
+    }
+    .ft { font-family: 'Space Grotesk', sans-serif;
+          font-size: 1.5rem; font-weight: 700; margin-bottom: .45rem; }
+    .fs { color: var(--muted); font-size: .88rem; margin-bottom: 1.85rem; }
+
+    .fg { margin-bottom: 1.2rem; }
+    .fl { display: block; font-size: .78rem; font-weight: 600; color: var(--muted);
+          margin-bottom: .45rem; letter-spacing: .04em; text-transform: uppercase; }
+    .fi, .fsel, .fta {
+      width: 100%; padding: .74rem 1rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 10px; color: var(--fg);
+      font-size: .93rem; font-family: inherit; transition: all .2s;
+    }
+    .fi::placeholder, .fta::placeholder { color: var(--steel); }
+    .fsel option { background: var(--card); }
+    .fi:focus,.fsel:focus,.fta:focus {
+      outline: none; border-color: var(--copper);
+      background: rgba(200,119,58,.06);
+      box-shadow: 0 0 0 3px rgba(200,119,58,.14);
+    }
+    .fta { resize: vertical; min-height: 96px; }
+    .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 440px) { .frow { grid-template-columns: 1fr; } }
+
+    .fbtn {
+      width: 100%; padding: 1rem; background: var(--copper); color: #fff;
+      border: none; border-radius: 10px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: all .25s;
+      box-shadow: 0 4px 22px rgba(200,119,58,.38);
+    }
+    .fbtn:hover { background: var(--copper-lt); transform: translateY(-2px);
+                  box-shadow: 0 10px 30px rgba(200,119,58,.52); }
+
+    .clist { list-style: none; display: flex; flex-direction: column;
+             gap: 1.5rem; margin-top: 1.75rem; }
+    .ci { display: flex; align-items: center; gap: 1rem; }
+    .ciw {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: rgba(200,119,58,.1); border: 1px solid rgba(200,119,58,.2);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    }
+    .ciw svg { color: var(--copper); }
+    .clbl { font-size: .76rem; color: var(--muted); text-transform: uppercase;
+            letter-spacing: .05em; margin-bottom: .08rem; }
+    .cval { font-size: 1rem; font-weight: 600; color: var(--fg); }
+    .cval a { color: var(--fg); text-decoration: none; }
+    .cval a:hover { color: var(--copper-lt); }
+
+    /* ── FOOTER ───────────────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem; text-align: center;
+      position: relative; z-index: 2;
+    }
+    .flogo { font-family: 'Space Grotesk', sans-serif;
+             font-size: 1.25rem; font-weight: 800; color: var(--fg);
+             margin-bottom: .4rem; letter-spacing: -.025em; }
+    .flogo span { color: var(--copper); }
+    .ftag { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
+    .flinks { display: flex; gap: 1.75rem; justify-content: center; flex-wrap: wrap;
+              margin-bottom: 1.5rem; }
+    .flinks a { color: var(--muted); font-size: .83rem; text-decoration: none;
+                transition: color .2s; }
+    .flinks a:hover { color: var(--copper); }
+    .fcopy { color: var(--steel); font-size: .76rem; }
+
+    /* ── SCROLL REVEAL ────────────────────────────────────────── */
+    .rv   { opacity: 0; transform: translateY(26px);
+            transition: opacity .65s ease, transform .65s ease; }
+    .rvl  { opacity: 0; transform: translateX(-30px);
+            transition: opacity .65s ease, transform .65s ease; }
+    .rvr  { opacity: 0; transform: translateX(30px);
+            transition: opacity .65s ease, transform .65s ease; }
+    .vis  { opacity: 1 !important; transform: none !important; }
+    .d1 { transition-delay: .1s; }
+    .d2 { transition-delay: .2s; }
+    .d3 { transition-delay: .3s; }
+    .d4 { transition-delay: .4s; }
+    .d5 { transition-delay: .5s; }
+    .d6 { transition-delay: .6s; }
   </style>
 </head>
 <body>
 
-  <nav>
-    <span class="nav-logo">M&amp;R Plumbing &amp; Heating</span>
-    <div class="nav-links">
-      <a href="#services" class="hide-mobile">Services</a>
-      <a href="#about" class="hide-mobile">About</a>
-      <a href="#contact" class="hide-mobile">Contact</a>
-      <a href="#booking" class="nav-cta">Get a Quote</a>
-    </div>
-  </nav>
+<!-- ── PIPE GRID BACKGROUND ──────────────────────────────────── -->
+<div class="pipe-bg" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <!-- Horizontal pipes -->
+    <line class="pl" x1="0" y1="115" x2="1440" y2="115" />
+    <line class="pw" x1="0" y1="115" x2="1440" y2="115" style="animation-delay:-.8s"/>
+    <line class="pl" x1="0" y1="345" x2="1440" y2="345" style="animation-delay:-1.4s"/>
+    <line class="pw" x1="0" y1="345" x2="1440" y2="345" style="animation-delay:-2.2s"/>
+    <line class="pl" x1="0" y1="575" x2="1440" y2="575" style="animation-delay:-.4s"/>
+    <line class="pw" x1="0" y1="575" x2="1440" y2="575" style="animation-delay:-1.7s"/>
+    <line class="pl" x1="0" y1="800" x2="1440" y2="800" style="animation-delay:-2.5s"/>
+    <!-- Vertical pipes -->
+    <line class="pl" x1="230" y1="0" x2="230" y2="900" style="animation-delay:-.3s"/>
+    <line class="pw" x1="230" y1="0" x2="230" y2="900" style="animation-delay:-1.1s"/>
+    <line class="pl" x1="460" y1="0" x2="460" y2="900" style="animation-delay:-1.9s"/>
+    <line class="pl" x1="690" y1="0" x2="690" y2="900" style="animation-delay:-.7s"/>
+    <line class="pw" x1="690" y1="0" x2="690" y2="900" style="animation-delay:-2.6s"/>
+    <line class="pl" x1="920" y1="0" x2="920" y2="900" style="animation-delay:-1.2s"/>
+    <line class="pl" x1="1150" y1="0" x2="1150" y2="900" style="animation-delay:-.5s"/>
+    <line class="pw" x1="1150" y1="0" x2="1150" y2="900" style="animation-delay:-2s"/>
+    <!-- Joints at intersections -->
+    <circle class="pj" cx="230" cy="115" r="5" opacity=".85"/>
+    <circle class="pj" cx="460" cy="115" r="4" opacity=".75"/>
+    <circle class="pj" cx="690" cy="115" r="6" opacity=".9"/>
+    <circle class="pj" cx="920" cy="115" r="4" opacity=".75"/>
+    <circle class="pj" cx="1150" cy="115" r="5" opacity=".85"/>
+    <circle class="pj" cx="230" cy="345" r="6" opacity=".9"/>
+    <circle class="pj" cx="460" cy="345" r="4" opacity=".75"/>
+    <circle class="pj" cx="690" cy="345" r="7" opacity=".9"/>
+    <circle class="pj" cx="920" cy="345" r="4" opacity=".75"/>
+    <circle class="pj" cx="1150" cy="345" r="5" opacity=".85"/>
+    <circle class="pj" cx="230" cy="575" r="4" opacity=".75"/>
+    <circle class="pj" cx="460" cy="575" r="6" opacity=".9"/>
+    <circle class="pj" cx="690" cy="575" r="4" opacity=".75"/>
+    <circle class="pj" cx="920" cy="575" r="7" opacity=".9"/>
+    <circle class="pj" cx="1150" cy="575" r="4" opacity=".75"/>
+  </svg>
+</div>
 
-  <header class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-dots"></div>
-    <div class="hero-content">
-      <div class="badge">Langford · Licensed Plumbing &amp; Heating</div>
-      <h1>We answer<br>the call.<br>Every time.</h1>
-      <p class="hero-sub">Fast, honest, and reliable plumbing and heating across Langford and the Westshore. When something goes wrong, we pick up the phone and show up when we say we will.</p>
-      <div class="hero-actions">
-        <a href="#booking" class="btn btn-primary">Get a Free Quote</a>
-        <a href="#services" class="btn btn-ghost">Our Services</a>
-      </div>
-    </div>
-  </header>
+<!-- ── WATER DROP PARTICLES ──────────────────────────────────── -->
+<div id="drops" aria-hidden="true"></div>
 
-  <div class="stats">
-    <div class="stat-item"><div class="stat-number">15+ yrs</div><div class="stat-label">In Business</div></div>
-    <div class="stat-item"><div class="stat-number">1,200+</div><div class="stat-label">Jobs Completed</div></div>
-    <div class="stat-item"><div class="stat-number">Same-Day</div><div class="stat-label">Available</div></div>
+<!-- ── NAV ──────────────────────────────────────────────────── -->
+<nav>
+  <div class="nbrand">
+    <!-- Pipe wrench logo mark -->
+    <svg class="nlogo" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="19" cy="19" r="19" fill="rgba(200,119,58,.15)"/>
+      <!-- wrench body -->
+      <path d="M10 28 L22 16" stroke="#c8773a" stroke-width="3" stroke-linecap="round"/>
+      <!-- wrench head -->
+      <circle cx="25" cy="13" r="5.5" stroke="#c8773a" stroke-width="2.5" fill="none"/>
+      <circle cx="25" cy="13" r="2" fill="#c8773a"/>
+      <!-- water drop -->
+      <path d="M13 30 Q13 34 10 34 Q7 34 7 31 Q7 28 10 25 Q13 28 13 31Z" fill="#0ea5e9" opacity=".75"/>
+    </svg>
+    <div class="nname"><span>M&amp;R</span> Plumbing &amp; Heating</div>
   </div>
+  <div class="nlinks">
+    <a href="#services" class="hms">Services</a>
+    <a href="#contact"  class="hms">Contact</a>
+    <a href="tel:2505072924" class="ncta">📞 Call Now</a>
+  </div>
+</nav>
 
-  <section id="services">
-    <div class="container">
-      <p class="section-label">What We Offer</p>
-      <h2>Our Services</h2>
-      <p class="section-sub">Full plumbing and heating services for residential and commercial — from emergency fixes to complete system installs.</p>
-      <div class="services-grid">
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
-          <h3>Plumbing Repairs</h3>
-          <p>Leaks, burst pipes, fixtures, valves. We fix it right the first time.</p>
+<!-- ── HERO ──────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="h-atm" aria-hidden="true"></div>
+  <div class="h-grid" aria-hidden="true"></div>
+
+  <div class="h-inner ct">
+    <!-- Text side -->
+    <div class="h-text">
+      <div class="ebadge"><div class="pdot"></div> 24 / 7 Emergency Response</div>
+      <h1 class="htitle">
+        <span class="tc">Plumbing</span><br/>
+        <span class="tw">&amp; Heating</span><br/>
+        Done Right.
+      </h1>
+      <p class="hsub">
+        Langford's trusted trades team — <strong>fast, licensed, and local.</strong>
+        Burst pipes at 2 am or a full heating install next week, one call solves it.
+      </p>
+      <div class="hact">
+        <a href="tel:2505072924" class="btn btnp">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+          Call 250-507-2924
+        </a>
+        <a href="#contact" class="btn btng">Get a Free Quote →</a>
+      </div>
+      <div class="htrust">
+        <div class="tch">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          BC Licensed &amp; Insured
         </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M5 3l.6 1.8L7.4 5.4l-1.8.6L5 8l-.6-1.8L2.6 5.6l1.8-.6L5 3z"/><path d="M19 12l.6 1.8 1.8.6-1.8.6-.6 1.8-.6-1.8-1.8-.6 1.8-.6.6-1.8z"/></svg></div>
-          <h3>Heating Systems</h3>
-          <p>Forced air, baseboard, heat pumps. Installs, repairs, and tune-ups.</p>
+        <div class="tch">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Same-Day Available
         </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></div>
-          <h3>Water Heaters</h3>
-          <p>Tank and tankless installs and replacements. Hot water restored fast.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
-          <h3>Drain Clearing</h3>
-          <p>Blocked drains cleared the same day. No mess, no fuss.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-          <h3>Emergency Service</h3>
-          <p>Something's flooding at midnight? We're the crew that answers.</p>
+        <div class="tch">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Upfront Pricing
         </div>
       </div>
     </div>
-  </section>
 
-  <section id="about">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-text">
-          <p class="section-label">Our Story</p>
-          <h2>Westshore plumbing you can actually count on.</h2>
-          <p>M&amp;R Plumbing has been fixing Westshore homes and businesses for over fifteen years. We're a small crew — and that's intentional. You deal with the same people every time, and we stand behind every job we do.</p>
-          <p>Honest estimates before we start. No surprise invoices. We show up on time, explain what we're doing, and clean up when we leave. It sounds basic because it should be.</p>
-          <a href="#booking" class="btn btn-primary" style="margin-top:0.5rem">Get a Quote</a>
-        </div>
-        <div class="about-visual">
-          <div class="about-visual-bg"></div>
-          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--accent)">
-            <rect x="20" y="90" width="70" height="18" rx="9" fill="currentColor" opacity="0.2"/>
-            <rect x="110" y="90" width="70" height="18" rx="9" fill="currentColor" opacity="0.2"/>
-            <rect x="91" y="40" width="18" height="70" rx="9" fill="currentColor" opacity="0.2"/>
-            <rect x="91" y="110" width="18" height="60" rx="9" fill="currentColor" opacity="0.15"/>
-            <circle cx="100" cy="100" r="16" fill="currentColor" opacity="0.25"/>
-            <circle cx="100" cy="100" r="8" fill="currentColor" opacity="0.4"/>
-            <circle cx="30" cy="99" r="7" fill="none" stroke="currentColor" stroke-width="2" opacity="0.35"/>
-            <circle cx="170" cy="99" r="7" fill="none" stroke="currentColor" stroke-width="2" opacity="0.35"/>
-            <circle cx="100" cy="44" r="7" fill="none" stroke="currentColor" stroke-width="2" opacity="0.35"/>
-            <circle cx="100" cy="165" r="7" fill="none" stroke="currentColor" stroke-width="2" opacity="0.35"/>
-          </svg>
-        </div>
+    <!-- Illustration side -->
+    <div class="h-vis" aria-hidden="true">
+      <div class="h-vis-wrap">
+        <svg viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:relative;z-index:1">
+          <defs>
+            <linearGradient id="cpg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"   stop-color="#6b3510"/>
+              <stop offset="32%"  stop-color="#c8773a"/>
+              <stop offset="62%"  stop-color="#e8a060"/>
+              <stop offset="100%" stop-color="#9c5420"/>
+            </linearGradient>
+            <linearGradient id="cpgv" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="#6b3510"/>
+              <stop offset="32%"  stop-color="#c8773a"/>
+              <stop offset="62%"  stop-color="#e8a060"/>
+              <stop offset="100%" stop-color="#9c5420"/>
+            </linearGradient>
+            <linearGradient id="stg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%"   stop-color="#5b7290"/>
+              <stop offset="100%" stop-color="#2d3f58"/>
+            </linearGradient>
+            <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(200,119,58,.22)"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+            <filter id="blur4">
+              <feGaussianBlur stdDeviation="4"/>
+            </filter>
+          </defs>
+
+          <!-- Background glow rings -->
+          <circle cx="220" cy="220" r="200" stroke="rgba(200,119,58,.09)" stroke-width="1" fill="none"/>
+          <circle cx="220" cy="220" r="155" stroke="rgba(200,119,58,.06)" stroke-width="1" fill="none"/>
+          <circle cx="220" cy="220" r="110" stroke="rgba(200,119,58,.05)" stroke-width="1" fill="none"/>
+          <!-- Glow blob behind -->
+          <ellipse cx="220" cy="220" rx="180" ry="160" fill="url(#glow)" filter="url(#blur4)" opacity=".8"/>
+
+          <!-- ── MAIN VERTICAL PIPE (center) ── -->
+          <!-- shadow/depth -->
+          <rect x="207" y="44" width="28" height="230" rx="5" fill="rgba(0,0,0,.35)"/>
+          <!-- pipe body -->
+          <rect x="203" y="42" width="34" height="230" rx="5" fill="url(#cpgv)"/>
+          <!-- shine strip -->
+          <rect x="206" y="42" width="7" height="230" rx="3.5" fill="rgba(255,255,255,.18)"/>
+          <!-- Dark side shade -->
+          <rect x="228" y="42" width="9" height="230" rx="4" fill="rgba(0,0,0,.18)"/>
+
+          <!-- ── ELBOW center→right ── -->
+          <path d="M203 272 Q203 314 245 314" stroke="url(#cpg)" stroke-width="34" stroke-linecap="round" fill="none"/>
+          <path d="M207 272 Q207 310 245 310" stroke="rgba(255,255,255,.12)" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+          <!-- ── HORIZONTAL PIPE right ── -->
+          <rect x="245" y="297" width="130" height="34" rx="5" fill="rgba(0,0,0,.3)"/>
+          <rect x="243" y="295" width="132" height="34" rx="5" fill="url(#cpg)"/>
+          <rect x="243" y="298" width="132" height="8" rx="4" fill="rgba(255,255,255,.17)"/>
+          <rect x="243" y="320" width="132" height="9" rx="4" fill="rgba(0,0,0,.18)"/>
+
+          <!-- ── ELBOW right→down ── -->
+          <path d="M375 295 Q408 295 408 328" stroke="url(#cpgv)" stroke-width="34" stroke-linecap="round" fill="none"/>
+          <path d="M375 299 Q404 299 404 328" stroke="rgba(255,255,255,.12)" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+          <!-- ── VERTICAL PIPE right ── -->
+          <rect x="391" y="328" width="34" height="90" rx="5" fill="url(#cpgv)"/>
+          <rect x="394" y="328" width="7" height="90" rx="3.5" fill="rgba(255,255,255,.17)"/>
+
+          <!-- ── ELBOW center→left ── -->
+          <path d="M203 272 Q203 314 162 314" stroke="url(#cpg)" stroke-width="34" stroke-linecap="round" fill="none"/>
+          <path d="M207 272 Q207 310 162 310" stroke="rgba(255,255,255,.12)" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+          <!-- ── HORIZONTAL PIPE left ── -->
+          <rect x="68" y="295" width="130" height="34" rx="5" fill="url(#cpg)" opacity=".9"/>
+          <rect x="68" y="298" width="130" height="8" rx="4" fill="rgba(255,255,255,.15)"/>
+
+          <!-- ── ELBOW left→down ── -->
+          <path d="M68 295 Q36 295 36 328" stroke="url(#cpgv)" stroke-width="34" stroke-linecap="round" fill="none"/>
+
+          <!-- ── VERTICAL PIPE left ── -->
+          <rect x="19" y="328" width="34" height="70" rx="5" fill="url(#cpgv)" opacity=".88"/>
+          <rect x="22" y="328" width="7" height="70" rx="3.5" fill="rgba(255,255,255,.15)"/>
+
+          <!-- ── VALVE on main pipe ── -->
+          <rect x="196" y="122" width="48" height="48" rx="9" fill="url(#stg)" stroke="rgba(200,119,58,.25)" stroke-width="1.5"/>
+          <rect x="201" y="127" width="38" height="38" rx="7" fill="rgba(8,20,42,.88)"/>
+          <!-- Valve handle stem -->
+          <rect x="215" y="107" width="10" height="20" rx="4" fill="#768fa8"/>
+          <!-- Valve handle cross bar -->
+          <rect x="205" y="103" width="30" height="9" rx="4.5" fill="#5b7290"/>
+          <circle cx="220" cy="107" r="5" fill="#4a6180"/>
+          <!-- Valve indicator dot (glowing) -->
+          <circle cx="220" cy="146" r="5" fill="#0ea5e9" opacity=".9"/>
+          <circle cx="220" cy="146" r="8" fill="rgba(14,165,233,.3)">
+            <animate attributeName="r" values="6;12;6" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".4;0;.4" dur="2s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- ── FLOWING WATER DROPLETS in main pipe ── -->
+          <circle cx="220" cy="80" r="5.5" fill="#0ea5e9" opacity=".85">
+            <animate attributeName="cy" values="70;270;70" dur="2.2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".85;.2;.85" dur="2.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="216" cy="55" r="4" fill="#38bdf8" opacity=".7">
+            <animate attributeName="cy" values="50;240;50" dur="2.2s" begin="-.75s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".7;.15;.7" dur="2.2s" begin="-.75s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="224" cy="95" r="3.5" fill="#7dd3fc" opacity=".6">
+            <animate attributeName="cy" values="90;265;90" dur="2.2s" begin="-1.4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".6;.1;.6" dur="2.2s" begin="-1.4s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- ── PRESSURE GAUGE on right branch ── -->
+          <circle cx="332" cy="282" r="25" fill="url(#stg)" stroke="rgba(200,119,58,.3)" stroke-width="1.5"/>
+          <circle cx="332" cy="282" r="18" fill="rgba(6,14,30,.92)"/>
+          <!-- Gauge tick marks -->
+          <line x1="332" y1="266" x2="332" y2="271" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+          <line x1="321" y1="269" x2="324" y2="273" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
+          <line x1="343" y1="269" x2="340" y2="273" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
+          <line x1="318" y1="280" x2="323" y2="280" stroke="rgba(255,255,255,.2)"  stroke-width="1.5"/>
+          <line x1="341" y1="280" x2="346" y2="280" stroke="rgba(255,255,255,.2)"  stroke-width="1.5"/>
+          <!-- Gauge needle -->
+          <line x1="332" y1="282" x2="340" y2="271" stroke="#c8773a" stroke-width="2" stroke-linecap="round">
+            <animateTransform attributeName="transform" type="rotate"
+              values="-20 332 282; 10 332 282; -20 332 282"
+              dur="4s" repeatCount="indefinite"/>
+          </line>
+          <circle cx="332" cy="282" r="3.5" fill="#c8773a"/>
+
+          <!-- ── FLAME at bottom right ── -->
+          <g transform="translate(390, 418)">
+            <ellipse cx="15" cy="10" rx="14" ry="10" fill="rgba(200,119,58,.2)" filter="url(#blur4)"/>
+            <!-- Outer flame -->
+            <path d="M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z" fill="#c8773a" opacity=".9">
+              <animate attributeName="d"
+                values="M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z;
+                        M7 14 Q9 3 15 0 Q12 9 21 4 Q23 12 17 18 Q11 21 7 14Z;
+                        M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z"
+                dur=".55s" repeatCount="indefinite"/>
+            </path>
+            <!-- Inner flame (hot core) -->
+            <path d="M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z" fill="#fcd34d" opacity=".85">
+              <animate attributeName="d"
+                values="M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z;
+                        M10 14 Q12 6 15 3 Q13 10 19 6 Q20 12 16 17 Q11 19 10 14Z;
+                        M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z"
+                dur=".55s" repeatCount="indefinite"/>
+            </path>
+          </g>
+
+          <!-- ── FAUCET at bottom left ── -->
+          <!-- Faucet body -->
+          <rect x="9" y="393" width="60" height="12" rx="5" fill="url(#stg)" stroke="rgba(200,119,58,.2)" stroke-width="1"/>
+          <!-- Handle -->
+          <rect x="26" y="381" width="12" height="14" rx="5" fill="#5b7290"/>
+          <rect x="22" y="378" width="20" height="7" rx="3.5" fill="#4a6180"/>
+          <!-- Water stream -->
+          <ellipse cx="39" cy="410" rx="3.5" ry="5" fill="#0ea5e9" opacity=".7">
+            <animate attributeName="ry" values="5;9;5" dur="1.4s" repeatCount="indefinite"/>
+            <animate attributeName="cy"  values="410;415;410" dur="1.4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".7;.4;.7" dur="1.4s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="39" cy="422" rx="2.5" ry="3.5" fill="#38bdf8" opacity=".5">
+            <animate attributeName="cy"  values="422;430;422" dur="1.4s" begin="-.3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".5;.1;.5" dur="1.4s" begin="-.3s" repeatCount="indefinite"/>
+          </ellipse>
+
+          <!-- ── WRENCH ICON floating upper right ── -->
+          <g transform="translate(326, 50) rotate(40 18 18)" opacity=".55">
+            <rect x="14" y="10" width="8" height="28" rx="4" fill="url(#stg)"/>
+            <circle cx="18" cy="8" r="10" stroke="#768fa8" stroke-width="3.5" fill="rgba(8,20,42,.5)"/>
+            <circle cx="18" cy="8" r="4"  fill="#768fa8"/>
+          </g>
+
+          <!-- ── WATER DROP upper left ── -->
+          <g transform="translate(62,68)" opacity=".55">
+            <path d="M18 38 Q18 52 9 52 Q0 52 0 42 Q0 30 9 18 Q18 30 18 42Z"
+                  fill="#0ea5e9" opacity=".65">
+              <animate attributeName="opacity" values=".65;.3;.65" dur="3.5s" repeatCount="indefinite"/>
+            </path>
+            <!-- Highlight -->
+            <ellipse cx="7" cy="35" rx="3" ry="5" fill="rgba(255,255,255,.25)" transform="rotate(-20 7 35)"/>
+          </g>
+
+          <!-- ── THERMOMETER upper left area ── -->
+          <g transform="translate(72, 130)" opacity=".6">
+            <rect x="6" y="0" width="8" height="36" rx="4" fill="url(#stg)"/>
+            <circle cx="10" cy="40" r="9" fill="url(#stg)"/>
+            <rect x="8" y="14" width="4" height="22" rx="2" fill="#e74c3c" opacity=".8">
+              <animate attributeName="height" values="22;28;22" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="y" values="14;8;14" dur="3s" repeatCount="indefinite"/>
+            </rect>
+            <circle cx="10" cy="40" r="5.5" fill="#e74c3c" opacity=".9"/>
+          </g>
+
+          <!-- ── STEAM wisps from pipe joints ── -->
+          <g opacity=".4">
+            <path d="M230 42 Q235 30 230 18" stroke="#bae6fd" stroke-width="2" stroke-linecap="round" fill="none">
+              <animate attributeName="opacity" values=".4;0;.4" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="d"
+                values="M230 42 Q235 30 230 18;M230 42 Q238 28 232 14;M230 42 Q235 30 230 18"
+                dur="2s" repeatCount="indefinite"/>
+            </path>
+            <path d="M220 42 Q215 30 220 16" stroke="#bae6fd" stroke-width="1.5" stroke-linecap="round" fill="none">
+              <animate attributeName="opacity" values=".3;0;.3" dur="2s" begin="-.6s" repeatCount="indefinite"/>
+              <animate attributeName="d"
+                values="M220 42 Q215 30 220 16;M220 42 Q213 28 218 12;M220 42 Q215 30 220 16"
+                dur="2s" begin="-.6s" repeatCount="indefinite"/>
+            </path>
+          </g>
+        </svg>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="testimonials">
-    <div class="container">
-      <p class="section-label">Happy Clients</p>
-      <h2>What People Say</h2>
-      <p class="section-sub">Don't take our word for it.</p>
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"Had a burst pipe on a Sunday. M&amp;R had someone at my door within two hours. Calm, professional, and the repair was solid. Absolute lifesavers."</p>
-          <div class="testimonial-author">David L. — Langford</div>
+<!-- ── URGENCY STRIP ─────────────────────────────────────────── -->
+<div class="ustrip">
+  <span>🔧 <strong>Now Available</strong></span>
+  <span class="ustrip-sep">|</span>
+  <span>Langford · Colwood · View Royal · Saanich · Greater Victoria</span>
+  <span class="ustrip-sep">|</span>
+  <span>Same-day emergency dispatch · no after-hours surcharge</span>
+</div>
+
+<!-- ── SERVICES ──────────────────────────────────────────────── -->
+<section class="svcs" id="services">
+  <div class="ct">
+    <div class="slabel">What We Do</div>
+    <h2 class="stitle rv">Every job, done properly.</h2>
+    <p class="ssub rv d1">From emergency call-outs to full heating installs — one team, one call, real results.</p>
+    <div class="svcs-grid">
+
+      <div class="sc rv d1">
+        <div class="sci">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
         </div>
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"They replaced our water heater and had hot water running again the same afternoon. Quote was exactly what I paid — no add-ons."</p>
-          <div class="testimonial-author">Karen B. — Colwood</div>
+        <div class="scn">Emergency Plumbing</div>
+        <div class="scd">Burst pipes, flooding, no water — we pick up 24/7 and dispatch fast. No after-hours upcharge, ever.</div>
+        <div class="sc-bar"></div>
+      </div>
+
+      <div class="sc rv d2">
+        <div class="sci">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22a8 8 0 100-16 8 8 0 000 16z"/><path d="M12 8v4l3 3"/><path d="M5 3L3 5M19 3l2 2"/></svg>
         </div>
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"M&amp;R have done three jobs at my house now. I stopped calling anyone else. Reliable, fairly priced, and they clean up properly."</p>
-          <div class="testimonial-author">Mike A. — View Royal</div>
+        <div class="scn">Water Heaters</div>
+        <div class="scd">Tank and tankless supply, install, and annual flush. Same-day hot water restoration when yours fails.</div>
+        <div class="sc-bar"></div>
+      </div>
+
+      <div class="sc rv d3">
+        <div class="sci">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h6"/></svg>
         </div>
+        <div class="scn">Heating Systems</div>
+        <div class="scd">Forced-air, in-floor radiant, and boiler work. We install, maintain, and repair the full range.</div>
+        <div class="sc-bar"></div>
+      </div>
+
+      <div class="sc rv d4">
+        <div class="sci">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22V12"/><path d="M5 12H2a10 10 0 0020 0h-3"/><path d="M12 2a5 5 0 00-5 5c0 2.5 2 4.5 4 6h2c2-1.5 4-3.5 4-6a5 5 0 00-5-5z"/></svg>
+        </div>
+        <div class="scn">Drain Clearing</div>
+        <div class="scd">Kitchen, bathroom, and main sewer lines. Camera inspection available — see the problem, fix it once.</div>
+        <div class="sc-bar"></div>
+      </div>
+
+      <div class="sc rv d5">
+        <div class="sci">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 7v4l2 2"/></svg>
+        </div>
+        <div class="scn">Leak Detection</div>
+        <div class="scd">Non-invasive tracing behind walls and under slabs. Find it before it becomes structural damage.</div>
+        <div class="sc-bar"></div>
+      </div>
+
+      <div class="sc rv d6">
+        <div class="sci">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div class="scn">Pipe Repair &amp; Repiping</div>
+        <div class="scd">Corroded, cracked, or aged supply lines? Full or partial repiping with modern materials, on schedule.</div>
+        <div class="sc-bar"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ─────────────────────────────────────────────────── -->
+<section class="stats">
+  <div class="ct">
+    <div class="stats-g">
+      <div class="rv">
+        <div class="stn" data-target="15" data-suffix="+">0</div>
+        <div class="stl">Years in Greater Victoria</div>
+      </div>
+      <div class="rv d1">
+        <div class="stn" data-target="2400" data-suffix="+">0</div>
+        <div class="stl">Jobs Completed</div>
+      </div>
+      <div class="rv d2">
+        <div class="stn" data-target="98" data-suffix="%">0</div>
+        <div class="stl">Customer Satisfaction</div>
+      </div>
+      <div class="rv d3">
+        <div class="stn">24/7</div>
+        <div class="stl">Emergency Availability</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="booking">
-    <div class="container">
-      <div class="booking-wrap">
-        <p class="section-label">Ready?</p>
-        <h2>Let's get it sorted.</h2>
-        <p class="section-sub" style="margin:0 auto 0">Request a free quote — we'll call back within a few hours.</p>
-        <div class="booking-card">
-          <h3>Pick a time</h3>
-          <p>Select an available slot below</p>
-          <p class="slots-label">Available This Week</p>
-          <div class="time-slots">
-            <button class="slot" onclick="selectSlot(this)">Mon 8:00am</button>
-            <button class="slot" onclick="selectSlot(this)">Mon 1:00pm</button>
-            <button class="slot" onclick="selectSlot(this)">Tue 9:00am</button>
-            <button class="slot" onclick="selectSlot(this)">Wed 10:00am</button>
-            <button class="slot" onclick="selectSlot(this)">Thu 2:00pm</button>
-            <button class="slot" onclick="selectSlot(this)">Fri 11:00am</button>
-          </div>
-          <form class="booking-form" onsubmit="submitBooking(event)" id="bform">
-            <div class="form-group"><label>First Name</label><input type="text" placeholder="David" required></div>
-            <div class="form-group"><label>Last Name</label><input type="text" placeholder="Lee" required></div>
-            <div class="form-group"><label>Phone</label><input type="tel" placeholder="250-555-0100" required></div>
-            <div class="form-group"><label>Email</label><input type="email" placeholder="david@email.com"></div>
-            <div class="form-group full"><label>Service Needed</label>
-              <select required>
-                <option value="" disabled selected>Choose a service…</option>
-                <option>Plumbing Repair</option>
+<!-- ── CONTACT + FORM ─────────────────────────────────────────── -->
+<section class="contacts" id="contact">
+  <div class="ct">
+    <div class="contacts-inner">
+
+      <!-- Left: info -->
+      <div class="rvl">
+        <div class="slabel">Get In Touch</div>
+        <h2 class="stitle">Ready when you need us.</h2>
+        <p class="ssub" style="margin-bottom:1.5rem">
+          Emergency at 2 am or a planned install next month — reach out and we respond fast.
+          No hold music. Real people answering.
+        </p>
+        <ul class="clist">
+          <li class="ci">
+            <div class="ciw">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+            </div>
+            <div>
+              <div class="clbl">Phone (24/7)</div>
+              <div class="cval"><a href="tel:2505072924">250-507-2924</a></div>
+            </div>
+          </li>
+          <li class="ci">
+            <div class="ciw">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="clbl">Email</div>
+              <div class="cval"><a href="mailto:m.phillips@shaw.ca">m.phillips@shaw.ca</a></div>
+            </div>
+          </li>
+          <li class="ci">
+            <div class="ciw">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="clbl">Location</div>
+              <div class="cval">2920 Mount Wells Drive, Langford BC V9B 4S1</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Right: form -->
+      <div class="rvr">
+        <div class="fcard">
+          <div class="ft">Request a Free Quote</div>
+          <div class="fs">We respond same day — usually within the hour.</div>
+          <form onsubmit="return handleForm(event)">
+            <div class="frow">
+              <div class="fg">
+                <label class="fl">First Name</label>
+                <input type="text" class="fi" placeholder="Sarah" required/>
+              </div>
+              <div class="fg">
+                <label class="fl">Last Name</label>
+                <input type="text" class="fi" placeholder="Thompson" required/>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl">Phone Number</label>
+              <input type="tel" class="fi" placeholder="250-555-0100" required/>
+            </div>
+            <div class="fg">
+              <label class="fl">Service Needed</label>
+              <select class="fsel" required>
+                <option value="">Select a service…</option>
+                <option>Emergency Plumbing</option>
+                <option>Water Heater</option>
                 <option>Heating System</option>
-                <option>Water Heater Install</option>
                 <option>Drain Clearing</option>
-                <option>Emergency Call</option>
-                <option>General Inspection</option>
+                <option>Leak Detection</option>
+                <option>Pipe Repair / Repiping</option>
+                <option>Other</option>
               </select>
             </div>
-            <div class="form-group full">
-              <button type="submit" class="btn-submit">Request a Free Quote</button>
+            <div class="fg">
+              <label class="fl">What's happening?</label>
+              <textarea class="fta" placeholder="e.g. Pipe burst in the basement, water coming through the floor…"></textarea>
             </div>
+            <button type="submit" class="fbtn">Send Request →</button>
           </form>
-          <div class="confirm-msg" id="confirm">✓ Quote request received! We'll call you back within a few hours to discuss the job. Thanks for choosing M&amp;R.</div>
         </div>
       </div>
+
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="contact">
-    <div class="container">
-      <p class="section-label">Visit Us</p>
-      <h2>Get In Touch</h2>
-      <div class="contact-grid" style="margin-top:2.5rem">
-        <div class="contact-block">
-          <div class="contact-block-label">Address</div>
-          <div class="contact-block-value">2920 Mount Wells Drive<br>Langford, BC V9B 4S1</div>
-        </div>
-        <div class="contact-block">
-          <div class="contact-block-label">Phone</div>
-          <div class="contact-block-value"><a href="tel:2505072924">250-507-2924</a></div>
-        </div>
-        <div class="contact-block">
-          <div class="contact-block-label">Email</div>
-          <div class="contact-block-value"><a href="mailto:m.phillips@shaw.ca">m.phillips@shaw.ca</a></div>
-        </div>
-        <div class="contact-block">
-          <div class="contact-block-label">Hours</div>
-          <div class="contact-block-value">Mon–Fri 7am–6pm<br>Sat 8am–2pm<br><span style="font-size:0.88rem;opacity:0.7">Emergency line available</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="flogo"><span>M&amp;R</span> Plumbing &amp; Heating</div>
+  <div class="ftag">Langford, BC &nbsp;·&nbsp; BC Licensed &amp; Insured &nbsp;·&nbsp; 24/7 Emergency Service</div>
+  <div class="flinks">
+    <a href="#services">Services</a>
+    <a href="tel:2505072924">250-507-2924</a>
+    <a href="mailto:m.phillips@shaw.ca">Email Us</a>
+    <a href="#contact">Free Quote</a>
+  </div>
+  <div class="fcopy">© 2026 M&amp;R Plumbing and Heating Ltd. &nbsp;·&nbsp; 2920 Mount Wells Drive, Langford BC V9B 4S1</div>
+</footer>
 
-  <footer>
-    <div class="footer-logo">M&amp;R Plumbing and Heating</div>
-    <div class="footer-sub">© 2025 M&amp;R Plumbing and Heating · Demo site crafted by <a href="https://pacificwayai.com">PacificWay AI</a></div>
-  </footer>
+<script>
+/* ── WATER DROP PARTICLES ────────────────────────────────────── */
+(function () {
+  const c = document.getElementById('drops');
+  for (let i = 0; i < 22; i++) {
+    const d = document.createElement('div');
+    d.className = 'drop';
+    const w = 1 + Math.random() * 2;
+    d.style.cssText = [
+      'left:'              + (Math.random() * 100) + 'vw',
+      'width:'             + w + 'px',
+      'height:'            + (w * 4 + Math.random() * 8) + 'px',
+      'animation-duration:'+ (5 + Math.random() * 9) + 's',
+      'animation-delay:'   + (Math.random() * 12) + 's',
+    ].join(';');
+    c.appendChild(d);
+  }
+})();
 
-  <script>
-    function selectSlot(el) {
-      document.querySelectorAll('.slot').forEach(s => s.classList.remove('active'));
-      el.classList.add('active');
+/* ── SCROLL REVEAL + COUNTER ─────────────────────────────────── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('vis');
+    /* counter animation */
+    const el = e.target.querySelector('[data-target]') || (e.target.dataset.target ? e.target : null);
+    if (el && !el.dataset.done) {
+      el.dataset.done = '1';
+      const target = +el.dataset.target;
+      const suffix = el.dataset.suffix || '+';
+      const dur    = 1800;
+      const t0     = performance.now();
+      (function step(now) {
+        const p = Math.min((now - t0) / dur, 1);
+        const v = Math.round((1 - Math.pow(1 - p, 3)) * target);
+        el.textContent = v.toLocaleString() + suffix;
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = target.toLocaleString() + suffix;
+      })(t0);
     }
-    function submitBooking(e) {
-      e.preventDefault();
-      document.getElementById('bform').style.display = 'none';
-      document.getElementById('confirm').style.display = 'block';
-    }
-    window.addEventListener('scroll', () => {
-      document.querySelector('nav').style.boxShadow = window.scrollY > 10 ? '0 1px 32px rgba(0,0,0,0.4)' : '';
-    });
-  </script>
+  });
+}, { threshold: 0.18 });
+
+document.querySelectorAll('.rv, .rvl, .rvr').forEach(el => io.observe(el));
+
+/* ── FORM SUBMIT ─────────────────────────────────────────────── */
+function handleForm(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.fbtn');
+  btn.textContent = '✓ Request sent — we\'ll call you shortly!';
+  btn.style.background = '#16a34a';
+  btn.disabled = true;
+  return false;
+}
+</script>
 </body>
 </html>
