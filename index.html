@@ -10,10 +10,10 @@
   <style>
     :root {
       --bg:        #060d1b;
-      --surface:   #0b1828;
-      --card:      #0e1f38;
+      --surface:   #0a1525;
+      --card:      #0d1c32;
       --copper:    #c8773a;
-      --copper-lt: #e8a060;
+      --copper-lt: #e09558;
       --copper-dk: #8b4f20;
       --water:     #0ea5e9;
       --steel:     #4b6180;
@@ -21,6 +21,7 @@
       --fg:        #e8f2ff;
       --border:    rgba(255,255,255,0.08);
     }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -30,928 +31,797 @@
       line-height: 1.6;
       overflow-x: hidden;
     }
+    a { text-decoration: none; }
+    img { display: block; max-width: 100%; }
 
-    /* ─── PIPE GRID OVERLAY (subtle texture on hero) ─── */
-    .pipe-overlay {
-      position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .07;
-    }
-    .pipe-overlay svg { width: 100%; height: 100%; }
-    .pl { stroke: #c8773a; stroke-width: 2; fill: none;
-          stroke-dasharray: 22 10; animation: pflow 5s linear infinite; }
-    .pw { stroke: #0ea5e9; stroke-width: 1.5; fill: none;
-          stroke-dasharray: 10 26; opacity: .8; animation: pflow 3s linear infinite; }
-    @keyframes pflow { to { stroke-dashoffset: -96; } }
-    .pj  { fill: #c8773a; }
-
-    /* ─── WATER DROP PARTICLES ─── */
-    #drops { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-    .drop {
-      position: absolute; border-radius: 50%;
-      background: linear-gradient(180deg, transparent 0%, #0ea5e9 100%);
-      animation: dfal linear infinite; opacity: 0;
-    }
-    @keyframes dfal {
-      0%   { transform: translateY(-20px); opacity: 0; }
-      8%   { opacity: .45; }
-      92%  { opacity: .25; }
-      100% { transform: translateY(102vh); opacity: 0; }
-    }
-
-    /* ─── NAV ─── */
+    /* ── NAV ────────────────────────────────────────────── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 400;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1rem 2rem;
-      background: rgba(6,13,27,.82);
-      backdrop-filter: blur(22px) saturate(1.6);
+      padding: 1rem 2.5rem;
+      background: rgba(6,13,27,.88);
+      backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
     }
-    .nbrand { display: flex; align-items: center; gap: .75rem; }
-    .nlogo  { width: 38px; height: 38px; flex-shrink: 0; }
-    .nname  { font-family: 'Space Grotesk', sans-serif;
-              font-size: 1rem; font-weight: 700; color: var(--fg);
-              letter-spacing: -.02em; line-height: 1.2; }
-    .nname span { color: var(--copper); }
-    .nlinks { display: flex; align-items: center; gap: 1.75rem; }
-    .nlinks a { font-size: .85rem; color: var(--muted); text-decoration: none;
-                font-weight: 500; transition: color .2s; }
-    .nlinks a:hover { color: var(--fg); }
-    .ncta {
-      background: var(--copper) !important; color: #fff !important;
-      padding: .52rem 1.25rem; border-radius: 8px;
-      font-size: .85rem; font-weight: 700; transition: all .2s;
-      text-decoration: none !important;
+    .nav-brand { display: flex; align-items: center; gap: .8rem; }
+    .nav-logo  { width: 36px; height: 36px; }
+    .nav-name  {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .95rem; font-weight: 700; color: var(--fg); letter-spacing: -.02em;
     }
-    .ncta:hover { background: var(--copper-lt) !important; transform: translateY(-1px); }
-    @media (max-width: 640px) {
-      .nlinks .hms { display: none; }
-      nav { padding: .75rem 1.25rem; }
+    .nav-name span { color: var(--copper); }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-links a {
+      font-size: .85rem; color: var(--muted); font-weight: 500; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-cta {
+      background: var(--copper); color: #fff !important;
+      padding: .55rem 1.3rem; border-radius: 8px;
+      font-size: .85rem; font-weight: 700; transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--copper-lt); }
+    @media (max-width: 680px) {
+      nav { padding: .8rem 1.25rem; }
+      .nav-links .hide { display: none; }
     }
 
-    /* ─── HERO ─── */
+    /* ── HERO ───────────────────────────────────────────── */
     .hero {
       min-height: 100svh;
-      position: relative;
       display: flex; align-items: center;
-      padding: 7rem 2rem 5rem;
-      overflow: hidden;
-      /* Real photo — welder with sparks, dark and dramatic */
-      background-image:
-        linear-gradient(108deg,
-          rgba(6,13,27,0.97) 0%,
-          rgba(6,13,27,0.90) 38%,
-          rgba(6,13,27,0.60) 65%,
-          rgba(6,13,27,0.28) 100%),
-        url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1920&q=85');
-      background-size: cover;
-      background-position: center 38%;
+      padding: 8rem 2.5rem 5rem;
+      position: relative; overflow: hidden;
+      /* Industrial pipes on brick — authentic plumbing/heating image */
+      background:
+        linear-gradient(110deg,
+          rgba(6,13,27,.97) 0%,
+          rgba(6,13,27,.88) 42%,
+          rgba(6,13,27,.55) 68%,
+          rgba(6,13,27,.22) 100%),
+        url('https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&fit=crop&w=1920&q=90')
+          center / cover no-repeat;
     }
-    /* Grid texture on top of photo */
-    .h-grid {
-      position: absolute; inset: 0; pointer-events: none; z-index: 1;
-      background-image:
-        linear-gradient(rgba(200,119,58,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(200,119,58,.04) 1px, transparent 1px);
-      background-size: 64px 64px;
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto; width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
     }
-    .h-inner {
-      position: relative; z-index: 2;
-      max-width: 1200px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 4rem; align-items: center;
-    }
-    @media (max-width: 840px) {
-      .h-inner { grid-template-columns: 1fr; }
-      .h-vis   { display: none; }
+    @media (max-width: 860px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-aside  { display: none; }
     }
 
-    /* Pulsing live badge */
-    .ebadge {
-      display: inline-flex; align-items: center; gap: .55rem;
-      background: rgba(14,165,233,.12);
-      border: 1px solid rgba(14,165,233,.3);
-      color: var(--water); font-size: .7rem;
-      font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-      padding: .38rem 1rem; border-radius: 100px; margin-bottom: 1.5rem;
+    /* Live badge */
+    .badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(14,165,233,.12); border: 1px solid rgba(14,165,233,.28);
+      color: var(--water); font-size: .68rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .36rem 1rem; border-radius: 100px; margin-bottom: 1.5rem;
     }
-    .pdot {
+    .badge-dot {
       width: 6px; height: 6px; border-radius: 50%; background: var(--water);
-      animation: pdot 1.6s ease-in-out infinite;
-    }
-    @keyframes pdot {
-      0%,100% { box-shadow: 0 0 0 0 rgba(14,165,233,.65); }
-      50%      { box-shadow: 0 0 0 7px rgba(14,165,233,0); }
+      box-shadow: 0 0 0 3px rgba(14,165,233,.3);
     }
 
-    .htitle {
+    .hero h1 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.8rem, 6.5vw, 5.4rem);
+      font-size: clamp(3rem, 6.5vw, 5.5rem);
       font-weight: 800; letter-spacing: -.045em; line-height: 1.0;
       margin-bottom: 1.25rem;
     }
-    .tc {
-      background: linear-gradient(135deg, var(--copper-lt) 0%, var(--copper) 50%, var(--copper-dk) 100%);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero h1 .copper {
+      background: linear-gradient(135deg, var(--copper-lt) 0%, var(--copper) 55%, var(--copper-dk) 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .tw {
-      background: linear-gradient(135deg, #bae6fd 0%, var(--water) 65%);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .hero h1 .blue {
+      background: linear-gradient(135deg, #bae6fd 0%, var(--water) 70%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .hsub {
-      font-size: clamp(1rem, 2.2vw, 1.2rem); color: var(--muted);
+    .hero-sub {
+      font-size: clamp(1rem, 2.2vw, 1.18rem); color: var(--muted);
       line-height: 1.82; margin-bottom: 2.5rem; max-width: 460px;
     }
-    .hsub strong { color: var(--fg); }
+    .hero-sub strong { color: var(--fg); }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.25rem; }
 
-    .hact { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.25rem; }
     .btn {
       display: inline-flex; align-items: center; gap: .5rem;
-      padding: .9rem 1.85rem; border-radius: 10px;
+      padding: .9rem 1.85rem; border-radius: 10px; border: none;
       font-size: .95rem; font-weight: 700; font-family: inherit;
-      text-decoration: none; transition: all .25s; cursor: pointer; border: none;
+      cursor: pointer; transition: background .2s, color .2s;
     }
-    .btnp {
-      background: var(--copper); color: #fff;
-      box-shadow: 0 4px 26px rgba(200,119,58,.4);
-    }
-    .btnp:hover { background: var(--copper-lt); transform: translateY(-2px);
-                  box-shadow: 0 10px 34px rgba(200,119,58,.55); }
-    .btng {
+    .btn-primary { background: var(--copper); color: #fff; }
+    .btn-primary:hover { background: var(--copper-lt); }
+    .btn-ghost {
       background: rgba(255,255,255,.07); color: var(--fg);
-      border: 1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.14);
     }
-    .btng:hover { background: rgba(255,255,255,.13); transform: translateY(-1px); }
+    .btn-ghost:hover { background: rgba(255,255,255,.13); }
 
-    .htrust { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-    .tch { display: flex; align-items: center; gap: .4rem;
-           font-size: .78rem; color: var(--muted); }
-    .tch svg { color: var(--copper); flex-shrink: 0; }
+    .trust-row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .trust-chip {
+      display: flex; align-items: center; gap: .4rem;
+      font-size: .78rem; color: var(--muted);
+    }
+    .trust-chip svg { color: var(--copper); flex-shrink: 0; }
 
-    /* Hero right: glassmorphism trust card + SVG illustration */
-    .h-vis {
-      display: flex; justify-content: center; align-items: center;
-      position: relative;
+    /* Hero aside: pull-quote card over the photo */
+    .hero-aside {
+      display: flex; justify-content: flex-end; align-items: center;
     }
-    .h-vis-inner {
-      position: relative; width: 420px;
+    .hero-card {
+      background: rgba(10,21,37,.82);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(200,119,58,.2);
+      border-radius: 20px; padding: 2rem;
+      max-width: 320px; width: 100%;
     }
-    /* Glow behind illustration */
-    .h-vis-inner::before {
-      content: '';
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-      width: 320px; height: 320px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(200,119,58,.2) 0%, transparent 70%);
-      animation: halo 4s ease-in-out infinite alternate;
+    .hero-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .75rem; font-weight: 700; color: var(--copper);
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: 1.2rem;
     }
-    @keyframes halo {
-      from { opacity: .5; transform: translate(-50%,-50%) scale(1); }
-      to   { opacity: 1;  transform: translate(-50%,-50%) scale(1.14); }
+    .hero-card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .hc-stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem; font-weight: 800; letter-spacing: -.04em;
+      color: var(--fg); line-height: 1;
     }
+    .hc-stat-num span { color: var(--copper); }
+    .hc-stat-label { font-size: .75rem; color: var(--muted); margin-top: .2rem; }
+    .hero-card-divider {
+      height: 1px; background: var(--border); margin: 1.5rem 0;
+    }
+    .hero-card-cert {
+      display: flex; align-items: center; gap: .6rem;
+      font-size: .8rem; color: var(--muted);
+    }
+    .hero-card-cert svg { color: var(--copper); flex-shrink: 0; }
 
-    /* ─── URGENCY STRIP ─── */
-    .ustrip {
-      position: relative; z-index: 2;
-      background: linear-gradient(135deg, rgba(200,119,58,.17), rgba(200,119,58,.08));
+    /* ── URGENCY BAR ────────────────────────────────────── */
+    .urgency {
+      background: linear-gradient(135deg, rgba(200,119,58,.18), rgba(200,119,58,.08));
       border-top: 1px solid rgba(200,119,58,.22);
       border-bottom: 1px solid rgba(200,119,58,.22);
-      padding: .9rem 2rem; text-align: center;
-      font-size: .83rem; color: var(--copper-lt); letter-spacing: .04em;
-      display: flex; align-items: center; justify-content: center; gap: .75rem; flex-wrap: wrap;
+      padding: .85rem 2.5rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: .8rem; flex-wrap: wrap;
+      font-size: .82rem; color: var(--copper-lt);
+      position: relative; z-index: 2;
     }
-    .ustrip-sep { color: rgba(200,119,58,.35); }
+    .urgency-sep { color: rgba(200,119,58,.35); }
 
-    /* ─── LAYOUT ─── */
+    /* ── SHARED LAYOUT ──────────────────────────────────── */
     section { position: relative; z-index: 2; }
-    .ct { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-    .slabel {
-      font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
-      color: var(--copper); font-weight: 700; margin-bottom: .7rem;
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2.5rem; }
+    .section-label {
+      font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--copper); font-weight: 700; margin-bottom: .65rem;
       display: flex; align-items: center; gap: .5rem;
     }
-    .slabel::before { content:''; display:block; width:22px; height:2px; background:var(--copper); }
-    .stitle {
+    .section-label::before { content:''; width:20px; height:2px; background:var(--copper); }
+    .section-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 800; letter-spacing: -.035em; line-height: 1.05;
-      margin-bottom: .9rem;
+      margin-bottom: .85rem;
     }
-    .ssub {
-      color: var(--muted); font-size: 1.05rem; max-width: 490px;
-      line-height: 1.78; margin-bottom: 3.5rem;
+    .section-sub {
+      color: var(--muted); font-size: 1.02rem;
+      line-height: 1.8; max-width: 500px; margin-bottom: 3rem;
     }
 
-    /* ─── SERVICES ─── */
-    .svcs { padding: 7rem 0; }
-    .svcs-grid {
+    /* ── SERVICES ───────────────────────────────────────── */
+    .services { padding: 7rem 0; }
+    .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1.5rem;
     }
-    .sc {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 18px; padding: 2rem;
-      position: relative; overflow: hidden;
-      transition: all .3s ease;
-    }
-    .sc::before {
-      content:''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(200,119,58,.11), transparent 65%);
-      opacity: 0; transition: opacity .3s;
-    }
-    .sc:hover { border-color: rgba(200,119,58,.38); transform: translateY(-5px);
-                box-shadow: 0 20px 52px rgba(0,0,0,.5); }
-    .sc:hover::before { opacity: 1; }
-    .sci {
-      width: 54px; height: 54px;
-      background: rgba(200,119,58,.1); border: 1px solid rgba(200,119,58,.2);
-      border-radius: 14px; display: flex; align-items: center; justify-content: center;
-      margin-bottom: 1.25rem; transition: all .3s;
-    }
-    .sc:hover .sci { background: rgba(200,119,58,.2); border-color: rgba(200,119,58,.4); }
-    .sci svg { color: var(--copper); }
-    .scn { font-family: 'Space Grotesk', sans-serif;
-           font-size: 1.1rem; font-weight: 700; margin-bottom: .55rem; }
-    .scd { font-size: .88rem; color: var(--muted); line-height: 1.72; }
-    .sc-bar {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--copper), var(--water), var(--copper));
-      background-size: 200% 100%; opacity: 0; transition: opacity .3s;
-      animation: shimmer 3s linear infinite;
-    }
-    .sc:hover .sc-bar { opacity: 1; }
-    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
-
-    /* ─── ABOUT / PHOTO SPLIT ─── */
-    .about { padding: 7rem 0; }
-    .about-inner {
-      display: grid; grid-template-columns: 1fr 1fr;
-      min-height: 520px; border-radius: 24px; overflow: hidden;
+    .service-card {
+      background: var(--card);
       border: 1px solid var(--border);
-      box-shadow: 0 32px 80px rgba(0,0,0,.5);
+      border-radius: 16px; padding: 1.8rem;
+      transition: border-color .25s;
+    }
+    .service-card:hover { border-color: rgba(200,119,58,.35); }
+    .service-icon {
+      width: 50px; height: 50px;
+      background: rgba(200,119,58,.1); border: 1px solid rgba(200,119,58,.2);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.15rem;
+    }
+    .service-icon svg { color: var(--copper); }
+    .service-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem;
+    }
+    .service-desc { font-size: .87rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── PHOTO GALLERY / WORK ───────────────────────────── */
+    .work { padding: 0 0 7rem; }
+    .work-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 1rem; height: 480px;
     }
     @media (max-width: 768px) {
-      .about-inner { grid-template-columns: 1fr; }
-      .about-photo { min-height: 280px; }
+      .work-grid { grid-template-columns: 1fr; height: auto; }
+      .work-grid .photo-card { min-height: 260px; }
     }
-    .about-photo {
-      position: relative; overflow: hidden;
+    .photo-card {
+      border-radius: 16px; overflow: hidden;
+      position: relative;
     }
-    .about-photo img {
+    .photo-card img {
       width: 100%; height: 100%;
       object-fit: cover; object-position: center;
-      display: block;
-      transition: transform 6s ease;
+      display: block; transition: transform .5s ease;
     }
-    .about-photo:hover img { transform: scale(1.04); }
-    /* Right-edge fade into the copy panel */
-    .about-photo::after {
+    .photo-card:hover img { transform: scale(1.04); }
+    .photo-card-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.25rem 1.25rem .9rem;
+      background: linear-gradient(to top, rgba(6,13,27,.92) 0%, transparent 100%);
+      font-size: .8rem; color: rgba(255,255,255,.75); font-weight: 500;
+    }
+
+    /* ── ABOUT SPLIT ────────────────────────────────────── */
+    .about { padding: 7rem 0; background: var(--surface); }
+    .about-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    @media (max-width: 768px) {
+      .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-photo-wrap { min-height: 320px; }
+    }
+    .about-photo-wrap {
+      border-radius: 20px; overflow: hidden;
+      position: relative; height: 520px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.45);
+    }
+    .about-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+    }
+    /* Copper bar accent */
+    .about-photo-wrap::after {
       content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(to right, transparent 55%, rgba(11,24,40,.95) 100%);
+      position: absolute; top: 1.5rem; left: -6px;
+      width: 6px; height: 80px; border-radius: 0 4px 4px 0;
+      background: linear-gradient(180deg, var(--copper-lt), var(--copper-dk));
     }
-    .about-copy {
-      background: var(--surface); padding: 3.5rem 3rem;
-      display: flex; flex-direction: column; justify-content: center;
-      border-left: 1px solid var(--border);
-    }
-    .about-copy .ssub { margin-bottom: 2rem; max-width: none; }
+    .about-copy .section-sub { max-width: none; margin-bottom: 2rem; }
     .promise-list {
-      list-style: none; display: flex; flex-direction: column; gap: 1rem;
+      list-style: none; display: flex; flex-direction: column; gap: .95rem;
     }
     .promise-item {
       display: flex; align-items: flex-start; gap: .85rem;
     }
-    .promise-dot {
-      width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
-      background: rgba(200,119,58,.15); border: 1.5px solid rgba(200,119,58,.4);
-      display: flex; align-items: center; justify-content: center; margin-top: .1rem;
+    .promise-check {
+      width: 20px; height: 20px; flex-shrink: 0; margin-top: .15rem;
+      border-radius: 50%;
+      background: rgba(200,119,58,.12); border: 1.5px solid rgba(200,119,58,.35);
+      display: flex; align-items: center; justify-content: center;
     }
-    .promise-dot svg { color: var(--copper); }
-    .promise-text { font-size: .9rem; color: var(--muted); line-height: 1.6; }
+    .promise-check svg { color: var(--copper); }
+    .promise-text { font-size: .9rem; color: var(--muted); line-height: 1.65; }
     .promise-text strong { color: var(--fg); }
 
-    /* ─── STATS ─── */
-    .stats {
-      padding: 5.5rem 0;
-      position: relative;
-      /* Real photo under the stats — gives depth without distraction */
-      background-image:
-        linear-gradient(rgba(6,13,27,.9), rgba(6,13,27,.9)),
-        url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1920&q=80');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+    /* ── STATS ──────────────────────────────────────────── */
+    .stats-bar {
+      padding: 5rem 0;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
-    .stats-g {
+    .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 2.5rem; text-align: center;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem; text-align: center;
     }
-    .stn {
+    .stat-number {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.8rem, 5.5vw, 4.4rem);
+      font-size: clamp(2.8rem, 5vw, 4rem);
       font-weight: 800; letter-spacing: -.05em; line-height: 1;
-      background: linear-gradient(135deg, var(--copper-lt), var(--copper));
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: .45rem;
+      color: var(--copper-lt); margin-bottom: .4rem;
     }
-    .stl { font-size: .82rem; color: var(--muted); font-weight: 500;
-           text-transform: uppercase; letter-spacing: .06em; }
+    .stat-label {
+      font-size: .8rem; color: var(--muted); font-weight: 500;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
 
-    /* ─── CONTACT / FORM ─── */
-    .contacts { padding: 7rem 0; }
-    .contacts-inner {
+    /* ── CONTACT ────────────────────────────────────────── */
+    .contact { padding: 7rem 0; }
+    .contact-inner {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 5rem; align-items: start;
     }
-    @media (max-width: 768px) { .contacts-inner { grid-template-columns: 1fr; gap: 2.5rem; } }
-    .fcard {
+    @media (max-width: 768px) { .contact-inner { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .form-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: 20px; padding: 2.5rem;
     }
-    .ft { font-family: 'Space Grotesk', sans-serif;
-          font-size: 1.5rem; font-weight: 700; margin-bottom: .45rem; }
-    .fs { color: var(--muted); font-size: .88rem; margin-bottom: 1.85rem; }
-    .fg { margin-bottom: 1.2rem; }
-    .fl { display: block; font-size: .78rem; font-weight: 600; color: var(--muted);
-          margin-bottom: .45rem; letter-spacing: .04em; text-transform: uppercase; }
-    .fi, .fsel, .fta {
-      width: 100%; padding: .74rem 1rem;
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 10px; color: var(--fg);
-      font-size: .93rem; font-family: inherit; transition: all .2s;
+    .form-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.45rem; font-weight: 700; margin-bottom: .4rem;
     }
-    .fi::placeholder, .fta::placeholder { color: var(--steel); }
-    .fsel option { background: var(--card); }
-    .fi:focus,.fsel:focus,.fta:focus {
+    .form-sub { color: var(--muted); font-size: .87rem; margin-bottom: 1.8rem; }
+    .form-group { margin-bottom: 1.15rem; }
+    .form-label {
+      display: block; font-size: .75rem; font-weight: 600; color: var(--muted);
+      margin-bottom: .42rem; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: .72rem 1rem;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      border-radius: 9px; color: var(--fg);
+      font-size: .92rem; font-family: inherit; transition: border-color .2s, box-shadow .2s;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--steel); }
+    .form-select option { background: var(--card); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
       outline: none; border-color: var(--copper);
-      background: rgba(200,119,58,.07);
-      box-shadow: 0 0 0 3px rgba(200,119,58,.15);
+      box-shadow: 0 0 0 3px rgba(200,119,58,.14);
     }
-    .fta { resize: vertical; min-height: 96px; }
-    .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 440px) { .frow { grid-template-columns: 1fr; } }
-    .fbtn {
+    .form-textarea { resize: vertical; min-height: 90px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 440px) { .form-row { grid-template-columns: 1fr; } }
+    .form-submit {
       width: 100%; padding: 1rem; background: var(--copper); color: #fff;
-      border: none; border-radius: 10px; font-size: 1rem; font-weight: 700;
-      cursor: pointer; font-family: inherit; transition: all .25s;
-      box-shadow: 0 4px 22px rgba(200,119,58,.4);
+      border: none; border-radius: 9px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .2s;
     }
-    .fbtn:hover { background: var(--copper-lt); transform: translateY(-2px);
-                  box-shadow: 0 10px 30px rgba(200,119,58,.55); }
-    .clist { list-style: none; display: flex; flex-direction: column;
-             gap: 1.5rem; margin-top: 1.75rem; }
-    .ci { display: flex; align-items: center; gap: 1rem; }
-    .ciw {
+    .form-submit:hover { background: var(--copper-lt); }
+
+    .contact-info-list {
+      list-style: none; display: flex; flex-direction: column; gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .contact-info-item { display: flex; align-items: center; gap: 1rem; }
+    .contact-icon {
       width: 44px; height: 44px; flex-shrink: 0;
       background: rgba(200,119,58,.1); border: 1px solid rgba(200,119,58,.2);
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      border-radius: 11px; display: flex; align-items: center; justify-content: center;
     }
-    .ciw svg { color: var(--copper); }
-    .clbl { font-size: .76rem; color: var(--muted); text-transform: uppercase;
-            letter-spacing: .05em; margin-bottom: .08rem; }
-    .cval { font-size: 1rem; font-weight: 600; color: var(--fg); }
-    .cval a { color: var(--fg); text-decoration: none; }
-    .cval a:hover { color: var(--copper-lt); }
+    .contact-icon svg { color: var(--copper); }
+    .contact-info-label {
+      font-size: .73rem; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .05em; margin-bottom: .06rem;
+    }
+    .contact-info-value { font-size: .98rem; font-weight: 600; color: var(--fg); }
+    .contact-info-value a { color: var(--fg); }
+    .contact-info-value a:hover { color: var(--copper-lt); }
 
-    /* ─── FOOTER ─── */
+    /* ── FOOTER ─────────────────────────────────────────── */
     footer {
       background: var(--surface); border-top: 1px solid var(--border);
-      padding: 3rem 2rem; text-align: center; position: relative; z-index: 2;
+      padding: 3rem 2.5rem; text-align: center; position: relative; z-index: 2;
     }
-    .flogo { font-family: 'Space Grotesk', sans-serif;
-             font-size: 1.25rem; font-weight: 800; color: var(--fg);
-             margin-bottom: .4rem; letter-spacing: -.025em; }
-    .flogo span { color: var(--copper); }
-    .ftag { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
-    .flinks { display: flex; gap: 1.75rem; justify-content: center; flex-wrap: wrap;
-              margin-bottom: 1.5rem; }
-    .flinks a { color: var(--muted); font-size: .83rem; text-decoration: none;
-                transition: color .2s; }
-    .flinks a:hover { color: var(--copper); }
-    .fcopy { color: var(--steel); font-size: .74rem; line-height: 1.6; }
-
-    /* ─── SCROLL REVEAL ─── */
-    .rv   { opacity: 0; transform: translateY(26px);
-            transition: opacity .65s ease, transform .65s ease; }
-    .rvl  { opacity: 0; transform: translateX(-30px);
-            transition: opacity .65s ease, transform .65s ease; }
-    .rvr  { opacity: 0; transform: translateX(30px);
-            transition: opacity .65s ease, transform .65s ease; }
-    .vis  { opacity: 1 !important; transform: none !important; }
-    .d1 { transition-delay: .1s; } .d2 { transition-delay: .2s; }
-    .d3 { transition-delay: .3s; } .d4 { transition-delay: .4s; }
-    .d5 { transition-delay: .5s; } .d6 { transition-delay: .6s; }
+    .footer-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem; font-weight: 800; color: var(--fg);
+      letter-spacing: -.02em; margin-bottom: .4rem;
+    }
+    .footer-logo span { color: var(--copper); }
+    .footer-tagline { color: var(--muted); font-size: .83rem; margin-bottom: 1.5rem; }
+    .footer-links {
+      display: flex; gap: 1.75rem; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .footer-links a {
+      color: var(--muted); font-size: .82rem; transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--copper); }
+    .footer-copy { color: var(--steel); font-size: .73rem; line-height: 1.6; }
   </style>
 </head>
 <body>
 
-<!-- ── WATER DROP PARTICLES ─── -->
-<div id="drops" aria-hidden="true"></div>
-
-<!-- ── NAV ─── -->
+<!-- ── NAV ──────────────────────────────────────────────── -->
 <nav>
-  <div class="nbrand">
-    <svg class="nlogo" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="19" cy="19" r="19" fill="rgba(200,119,58,.15)"/>
-      <path d="M10 28 L22 16" stroke="#c8773a" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="25" cy="13" r="5.5" stroke="#c8773a" stroke-width="2.5" fill="none"/>
-      <circle cx="25" cy="13" r="2" fill="#c8773a"/>
-      <path d="M13 30 Q13 34 10 34 Q7 34 7 31 Q7 28 10 25 Q13 28 13 31Z" fill="#0ea5e9" opacity=".75"/>
+  <div class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="18" r="18" fill="rgba(200,119,58,.15)"/>
+      <path d="M9 27 L21 15" stroke="#c8773a" stroke-width="2.8" stroke-linecap="round"/>
+      <circle cx="24" cy="12" r="5" stroke="#c8773a" stroke-width="2.4" fill="none"/>
+      <circle cx="24" cy="12" r="1.8" fill="#c8773a"/>
+      <path d="M12 29 Q12 33 9 33 Q6 33 6 30 Q6 27 9 24 Q12 27 12 30Z" fill="#0ea5e9" opacity=".8"/>
     </svg>
-    <div class="nname"><span>M&amp;R</span> Plumbing &amp; Heating</div>
+    <div class="nav-name"><span>M&amp;R</span> Plumbing &amp; Heating</div>
   </div>
-  <div class="nlinks">
-    <a href="#services" class="hms">Services</a>
-    <a href="#about"   class="hms">About</a>
-    <a href="#contact" class="hms">Contact</a>
-    <a href="tel:2505072924" class="ncta">📞 Call Now</a>
+  <div class="nav-links">
+    <a href="#services" class="hide">Services</a>
+    <a href="#work"    class="hide">Our Work</a>
+    <a href="#about"   class="hide">About</a>
+    <a href="#contact" class="hide">Contact</a>
+    <a href="tel:2505072924" class="nav-cta">📞 Call Now</a>
   </div>
 </nav>
 
-<!-- ── HERO (real photo background) ─── -->
+<!-- ── HERO (industrial pipes photo) ────────────────────── -->
 <section class="hero">
-  <!-- Subtle pipe grid texture over photo -->
-  <div class="pipe-overlay" aria-hidden="true">
-    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <line class="pl" x1="0" y1="115" x2="1440" y2="115"/>
-      <line class="pw" x1="0" y1="115" x2="1440" y2="115" style="animation-delay:-.8s"/>
-      <line class="pl" x1="0" y1="345" x2="1440" y2="345" style="animation-delay:-1.4s"/>
-      <line class="pw" x1="0" y1="345" x2="1440" y2="345" style="animation-delay:-2.2s"/>
-      <line class="pl" x1="0" y1="575" x2="1440" y2="575" style="animation-delay:-.4s"/>
-      <line class="pl" x1="230" y1="0" x2="230" y2="900" style="animation-delay:-.3s"/>
-      <line class="pw" x1="230" y1="0" x2="230" y2="900" style="animation-delay:-1.1s"/>
-      <line class="pl" x1="690" y1="0" x2="690" y2="900" style="animation-delay:-.7s"/>
-      <line class="pl" x1="1150" y1="0" x2="1150" y2="900" style="animation-delay:-.5s"/>
-      <circle class="pj" cx="230" cy="115" r="5" opacity=".85"/>
-      <circle class="pj" cx="690" cy="115" r="6" opacity=".9"/>
-      <circle class="pj" cx="1150" cy="115" r="5" opacity=".85"/>
-      <circle class="pj" cx="230" cy="345" r="6" opacity=".9"/>
-      <circle class="pj" cx="690" cy="345" r="7" opacity=".9"/>
-      <circle class="pj" cx="1150" cy="345" r="5" opacity=".85"/>
-    </svg>
-  </div>
-  <div class="h-grid" aria-hidden="true"></div>
+  <div class="hero-inner container">
 
-  <div class="h-inner ct">
-    <!-- Text column -->
-    <div class="h-text">
-      <div class="ebadge"><div class="pdot"></div> 24 / 7 Emergency Response</div>
-      <h1 class="htitle">
-        <span class="tc">Plumbing</span><br/>
-        <span class="tw">&amp; Heating</span><br/>
+    <!-- Text -->
+    <div class="hero-text">
+      <div class="badge">
+        <div class="badge-dot"></div>
+        24 / 7 Emergency Response
+      </div>
+      <h1>
+        <span class="copper">Plumbing</span><br/>
+        <span class="blue">&amp; Heating</span><br/>
         Done Right.
       </h1>
-      <p class="hsub">
+      <p class="hero-sub">
         Langford's trusted trades team — <strong>fast, licensed, and local.</strong>
         Burst pipes at 2 am or a full heating install next week, one call solves it.
       </p>
-      <div class="hact">
-        <a href="tel:2505072924" class="btn btnp">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      <div class="hero-actions">
+        <a href="tel:2505072924" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
           Call 250-507-2924
         </a>
-        <a href="#contact" class="btn btng">Get a Free Quote →</a>
+        <a href="#contact" class="btn btn-ghost">Get a Free Quote →</a>
       </div>
-      <div class="htrust">
-        <div class="tch">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div class="trust-row">
+        <div class="trust-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           BC Licensed &amp; Insured
         </div>
-        <div class="tch">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Same-Day Available
+        <div class="trust-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Same-Day Service
         </div>
-        <div class="tch">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <div class="trust-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           Upfront Pricing
         </div>
       </div>
     </div>
 
-    <!-- Right column: animated SVG illustration floating over the photo -->
-    <div class="h-vis" aria-hidden="true">
-      <div class="h-vis-inner">
-        <svg viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;position:relative;z-index:1">
-          <defs>
-            <linearGradient id="cpgv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stop-color="#6b3510"/>
-              <stop offset="32%"  stop-color="#c8773a"/>
-              <stop offset="62%"  stop-color="#e8a060"/>
-              <stop offset="100%" stop-color="#9c5420"/>
-            </linearGradient>
-            <linearGradient id="cpg" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%"   stop-color="#6b3510"/>
-              <stop offset="32%"  stop-color="#c8773a"/>
-              <stop offset="62%"  stop-color="#e8a060"/>
-              <stop offset="100%" stop-color="#9c5420"/>
-            </linearGradient>
-            <linearGradient id="stg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#5b7290"/>
-              <stop offset="100%" stop-color="#2d3f58"/>
-            </linearGradient>
-            <filter id="blur4"><feGaussianBlur stdDeviation="4"/></filter>
-          </defs>
-
-          <!-- Atmosphere rings -->
-          <circle cx="220" cy="220" r="200" stroke="rgba(200,119,58,.08)" stroke-width="1" fill="none"/>
-          <circle cx="220" cy="220" r="155" stroke="rgba(200,119,58,.06)" stroke-width="1" fill="none"/>
-          <ellipse cx="220" cy="220" rx="180" ry="160"
-                   fill="rgba(200,119,58,.15)" filter="url(#blur4)" opacity=".7"/>
-
-          <!-- Main vertical pipe -->
-          <rect x="207" y="42" width="8"  height="228" rx="4" fill="rgba(0,0,0,.3)"/>
-          <rect x="203" y="40" width="34" height="232" rx="5" fill="url(#cpgv)"/>
-          <rect x="206" y="40" width="7"  height="232" rx="3.5" fill="rgba(255,255,255,.18)"/>
-          <rect x="228" y="40" width="9"  height="232" rx="4"   fill="rgba(0,0,0,.18)"/>
-
-          <!-- Elbow center→right -->
-          <path d="M203 272 Q203 314 245 314" stroke="url(#cpg)" stroke-width="34" stroke-linecap="round" fill="none"/>
-          <path d="M207 272 Q207 310 245 310" stroke="rgba(255,255,255,.12)" stroke-width="7" stroke-linecap="round" fill="none"/>
-
-          <!-- Horizontal pipe right -->
-          <rect x="243" y="295" width="132" height="34" rx="5" fill="url(#cpg)"/>
-          <rect x="243" y="298" width="132" height="8"  rx="4" fill="rgba(255,255,255,.17)"/>
-
-          <!-- Elbow right→down -->
-          <path d="M375 295 Q408 295 408 328" stroke="url(#cpgv)" stroke-width="34" stroke-linecap="round" fill="none"/>
-          <rect x="391" y="328" width="34" height="90" rx="5" fill="url(#cpgv)"/>
-          <rect x="394" y="328" width="7"  height="90" rx="3.5" fill="rgba(255,255,255,.17)"/>
-
-          <!-- Elbow center→left -->
-          <path d="M203 272 Q203 314 162 314" stroke="url(#cpg)" stroke-width="34" stroke-linecap="round" fill="none"/>
-          <rect x="68" y="295" width="130" height="34" rx="5" fill="url(#cpg)" opacity=".9"/>
-          <rect x="68" y="298" width="130" height="8"  rx="4" fill="rgba(255,255,255,.15)"/>
-          <path d="M68 295 Q36 295 36 328" stroke="url(#cpgv)" stroke-width="34" stroke-linecap="round" fill="none"/>
-          <rect x="19" y="328" width="34" height="70" rx="5" fill="url(#cpgv)" opacity=".88"/>
-          <rect x="22" y="328" width="7"  height="70" rx="3.5" fill="rgba(255,255,255,.15)"/>
-
-          <!-- Valve -->
-          <rect x="196" y="122" width="48" height="48" rx="9" fill="url(#stg)" stroke="rgba(200,119,58,.25)" stroke-width="1.5"/>
-          <rect x="201" y="127" width="38" height="38" rx="7" fill="rgba(8,20,42,.88)"/>
-          <rect x="215" y="107" width="10" height="20" rx="4" fill="#768fa8"/>
-          <rect x="205" y="103" width="30" height="9"  rx="4.5" fill="#5b7290"/>
-          <circle cx="220" cy="107" r="5" fill="#4a6180"/>
-          <!-- Valve glow -->
-          <circle cx="220" cy="146" r="5" fill="#0ea5e9" opacity=".9"/>
-          <circle cx="220" cy="146" r="8" fill="rgba(14,165,233,.3)">
-            <animate attributeName="r"       values="6;12;6"  dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".4;0;.4" dur="2s" repeatCount="indefinite"/>
-          </circle>
-
-          <!-- Flowing water droplets -->
-          <circle cx="220" cy="70" r="5.5" fill="#0ea5e9" opacity=".85">
-            <animate attributeName="cy"      values="65;268;65"   dur="2.2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".85;.2;.85"  dur="2.2s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="216" cy="50" r="4"   fill="#38bdf8" opacity=".7">
-            <animate attributeName="cy"      values="48;245;48"   dur="2.2s" begin="-.75s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".7;.15;.7"   dur="2.2s" begin="-.75s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="224" cy="92" r="3.5" fill="#7dd3fc" opacity=".6">
-            <animate attributeName="cy"      values="88;262;88"   dur="2.2s" begin="-1.4s"  repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".6;.1;.6"    dur="2.2s" begin="-1.4s"  repeatCount="indefinite"/>
-          </circle>
-
-          <!-- Pressure gauge -->
-          <circle cx="332" cy="282" r="25" fill="url(#stg)" stroke="rgba(200,119,58,.3)" stroke-width="1.5"/>
-          <circle cx="332" cy="282" r="18" fill="rgba(6,14,30,.92)"/>
-          <line x1="332" y1="266" x2="332" y2="271" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
-          <line x1="321" y1="269" x2="324" y2="273" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
-          <line x1="343" y1="269" x2="340" y2="273" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
-          <line x1="318" y1="280" x2="323" y2="280" stroke="rgba(255,255,255,.2)"  stroke-width="1.5"/>
-          <line x1="341" y1="280" x2="346" y2="280" stroke="rgba(255,255,255,.2)"  stroke-width="1.5"/>
-          <line x1="332" y1="282" x2="340" y2="271" stroke="#c8773a" stroke-width="2" stroke-linecap="round">
-            <animateTransform attributeName="transform" type="rotate"
-              values="-20 332 282; 10 332 282; -20 332 282"
-              dur="4s" repeatCount="indefinite"/>
-          </line>
-          <circle cx="332" cy="282" r="3.5" fill="#c8773a"/>
-
-          <!-- Flame -->
-          <g transform="translate(390, 418)">
-            <ellipse cx="15" cy="10" rx="14" ry="10" fill="rgba(200,119,58,.2)" filter="url(#blur4)"/>
-            <path d="M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z" fill="#c8773a" opacity=".9">
-              <animate attributeName="d"
-                values="M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z;M7 14 Q9 3 15 0 Q12 9 21 4 Q23 12 17 18 Q11 21 7 14Z;M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z"
-                dur=".55s" repeatCount="indefinite"/>
-            </path>
-            <path d="M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z" fill="#fcd34d" opacity=".85">
-              <animate attributeName="d"
-                values="M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z;M10 14 Q12 6 15 3 Q13 10 19 6 Q20 12 16 17 Q11 19 10 14Z;M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z"
-                dur=".55s" repeatCount="indefinite"/>
-            </path>
-          </g>
-
-          <!-- Faucet -->
-          <rect x="9" y="393" width="60" height="12" rx="5" fill="url(#stg)" stroke="rgba(200,119,58,.2)" stroke-width="1"/>
-          <rect x="26" y="381" width="12" height="14" rx="5" fill="#5b7290"/>
-          <rect x="22" y="378" width="20" height="7"  rx="3.5" fill="#4a6180"/>
-          <ellipse cx="39" cy="410" rx="3.5" ry="5" fill="#0ea5e9" opacity=".7">
-            <animate attributeName="ry"      values="5;9;5"        dur="1.4s" repeatCount="indefinite"/>
-            <animate attributeName="cy"      values="410;415;410"  dur="1.4s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".7;.4;.7"     dur="1.4s" repeatCount="indefinite"/>
-          </ellipse>
-
-          <!-- Steam wisps -->
-          <path d="M230 42 Q235 30 230 18" stroke="#bae6fd" stroke-width="2" stroke-linecap="round" fill="none" opacity=".35">
-            <animate attributeName="opacity" values=".35;0;.35" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="d" values="M230 42 Q235 30 230 18;M230 42 Q238 28 232 14;M230 42 Q235 30 230 18" dur="2s" repeatCount="indefinite"/>
-          </path>
-          <path d="M220 42 Q215 30 220 16" stroke="#bae6fd" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".25">
-            <animate attributeName="opacity" values=".25;0;.25" dur="2s" begin="-.6s" repeatCount="indefinite"/>
-          </path>
-
-          <!-- Floating wrench -->
-          <g transform="translate(326, 50) rotate(40 18 18)" opacity=".5">
-            <rect x="14" y="10" width="8" height="28" rx="4" fill="url(#stg)"/>
-            <circle cx="18" cy="8" r="10" stroke="#768fa8" stroke-width="3.5" fill="rgba(8,20,42,.5)"/>
-            <circle cx="18" cy="8" r="4"  fill="#768fa8"/>
-          </g>
-
-          <!-- Water drop -->
-          <g transform="translate(62,68)" opacity=".45">
-            <path d="M18 38 Q18 52 9 52 Q0 52 0 42 Q0 30 9 18 Q18 30 18 42Z" fill="#0ea5e9" opacity=".65">
-              <animate attributeName="opacity" values=".65;.3;.65" dur="3.5s" repeatCount="indefinite"/>
-            </path>
-            <ellipse cx="7" cy="35" rx="3" ry="5" fill="rgba(255,255,255,.25)" transform="rotate(-20 7 35)"/>
-          </g>
-        </svg>
+    <!-- Stats card floating over photo -->
+    <div class="hero-aside">
+      <div class="hero-card">
+        <div class="hero-card-title">By the numbers</div>
+        <div class="hero-card-stats">
+          <div>
+            <div class="hc-stat-num">15<span>+</span></div>
+            <div class="hc-stat-label">Years serving<br/>Greater Victoria</div>
+          </div>
+          <div>
+            <div class="hc-stat-num">2.4k<span>+</span></div>
+            <div class="hc-stat-label">Jobs completed</div>
+          </div>
+          <div>
+            <div class="hc-stat-num">98<span>%</span></div>
+            <div class="hc-stat-label">Customer<br/>satisfaction</div>
+          </div>
+          <div>
+            <div class="hc-stat-num">24<span>/7</span></div>
+            <div class="hc-stat-label">Emergency<br/>dispatch</div>
+          </div>
+        </div>
+        <div class="hero-card-divider"></div>
+        <div class="hero-card-cert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          BC Red Seal Certified · Fully Insured
+        </div>
       </div>
     </div>
+
   </div>
 </section>
 
-<!-- ── URGENCY STRIP ─── -->
-<div class="ustrip">
-  <span>🔧 <strong>Now Available</strong></span>
-  <span class="ustrip-sep">|</span>
-  <span>Langford · Colwood · View Royal · Saanich · Greater Victoria</span>
-  <span class="ustrip-sep">|</span>
-  <span>Same-day emergency dispatch · no after-hours surcharge</span>
+<!-- ── URGENCY BAR ────────────────────────────────────────── -->
+<div class="urgency">
+  <strong>Now available</strong>
+  <span class="urgency-sep">·</span>
+  Langford · Colwood · View Royal · Saanich · Greater Victoria
+  <span class="urgency-sep">·</span>
+  Same-day emergency response · No after-hours surcharge
 </div>
 
-<!-- ── SERVICES ─── -->
-<section class="svcs" id="services">
-  <div class="ct">
-    <div class="slabel">What We Do</div>
-    <h2 class="stitle rv">Every job, done properly.</h2>
-    <p class="ssub rv d1">From emergency call-outs to full heating installs — one team, one call, real results.</p>
-    <div class="svcs-grid">
+<!-- ── SERVICES ───────────────────────────────────────────── -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">Every job, done properly.</h2>
+    <p class="section-sub">From emergency call-outs to full system installs — one team, one call.</p>
+    <div class="services-grid">
 
-      <div class="sc rv d1">
-        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div>
-        <div class="scn">Emergency Plumbing</div>
-        <div class="scd">Burst pipes, flooding, no water — we pick up 24/7 and dispatch fast. No after-hours upcharge, ever.</div>
-        <div class="sc-bar"></div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+        </div>
+        <div class="service-name">Emergency Plumbing</div>
+        <div class="service-desc">Burst pipes, flooding, no water — we pick up 24/7 and dispatch fast. No after-hours upcharge, ever.</div>
       </div>
 
-      <div class="sc rv d2">
-        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22a8 8 0 100-16 8 8 0 000 16z"/><path d="M12 8v4l3 3"/><path d="M5 3L3 5M19 3l2 2"/></svg></div>
-        <div class="scn">Water Heaters</div>
-        <div class="scd">Tank and tankless supply, install, and annual flush. Same-day hot water restoration when yours fails.</div>
-        <div class="sc-bar"></div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22a8 8 0 100-16 8 8 0 000 16z"/><path d="M12 8v4l3 3"/><path d="M5 3L3 5M19 3l2 2"/></svg>
+        </div>
+        <div class="service-name">Water Heaters</div>
+        <div class="service-desc">Tank and tankless supply, install, and annual flush. Same-day hot water restoration when yours fails.</div>
       </div>
 
-      <div class="sc rv d3">
-        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h6"/></svg></div>
-        <div class="scn">Heating Systems</div>
-        <div class="scd">Forced-air, in-floor radiant, and boiler work. We install, maintain, and repair the full range.</div>
-        <div class="sc-bar"></div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        </div>
+        <div class="service-name">Heating Systems</div>
+        <div class="service-desc">Forced-air, in-floor radiant, and boiler work. We install, maintain, and repair the full range.</div>
       </div>
 
-      <div class="sc rv d4">
-        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22V12"/><path d="M5 12H2a10 10 0 0020 0h-3"/><path d="M12 2a5 5 0 00-5 5c0 2.5 2 4.5 4 6h2c2-1.5 4-3.5 4-6a5 5 0 00-5-5z"/></svg></div>
-        <div class="scn">Drain Clearing</div>
-        <div class="scd">Kitchen, bathroom, and main sewer lines. Camera inspection available — see the problem, fix it once.</div>
-        <div class="sc-bar"></div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22V12"/><path d="M5 12H2a10 10 0 0020 0h-3"/><path d="M12 2a5 5 0 00-5 5c0 2.5 2 4.5 4 6h2c2-1.5 4-3.5 4-6a5 5 0 00-5-5z"/></svg>
+        </div>
+        <div class="service-name">Drain Clearing</div>
+        <div class="service-desc">Kitchen, bathroom, and main sewer lines. Camera inspection available — see the problem, fix it once.</div>
       </div>
 
-      <div class="sc rv d5">
-        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 7v4l2 2"/></svg></div>
-        <div class="scn">Leak Detection</div>
-        <div class="scd">Non-invasive tracing behind walls and under slabs. Find it before it becomes structural damage.</div>
-        <div class="sc-bar"></div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <div class="service-name">Leak Detection</div>
+        <div class="service-desc">Non-invasive tracing behind walls and under slabs. Find it before it becomes structural damage.</div>
       </div>
 
-      <div class="sc rv d6">
-        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
-        <div class="scn">Pipe Repair &amp; Repiping</div>
-        <div class="scd">Corroded, cracked, or aged supply lines? Full or partial repiping with modern materials, on schedule.</div>
-        <div class="sc-bar"></div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div class="service-name">Pipe Repair &amp; Repiping</div>
+        <div class="service-desc">Corroded, cracked, or aged supply lines? Full or partial repiping with modern materials, on schedule.</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ── ABOUT / PHOTO SPLIT ─── -->
-<section class="about" id="about">
-  <div class="ct">
-    <div class="about-inner rv">
-      <!-- Real photo: trades work in progress -->
-      <div class="about-photo">
+<!-- ── OUR WORK PHOTO GALLERY ─────────────────────────────── -->
+<section class="work" id="work">
+  <div class="container">
+    <div class="section-label">Our Work</div>
+    <h2 class="section-title">Results you can see.</h2>
+    <p class="section-sub">From full bathroom renovations to emergency repairs — quality that holds up.</p>
+    <div class="work-grid">
+
+      <!-- Main large card: luxury bathtub -->
+      <div class="photo-card">
         <img
-          src="https://images.unsplash.com/photo-1607400201515-c2c41c07d307?auto=format&fit=crop&w=900&q=85"
-          alt="M&R tradesperson sealing and insulating on a job site"
+          src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=900&q=88"
+          alt="Luxury bathroom with freestanding tub installed by M&R"
+          loading="lazy"
+        />
+        <div class="photo-card-label">Bathroom renovation · Langford</div>
+      </div>
+
+      <!-- Bright residential bathroom -->
+      <div class="photo-card">
+        <img
+          src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=700&q=85"
+          alt="Clean residential bathroom plumbing"
+          loading="lazy"
+        />
+        <div class="photo-card-label">Full bathroom fit-out · Colwood</div>
+      </div>
+
+      <!-- Sealing / insulation work -->
+      <div class="photo-card">
+        <img
+          src="https://images.unsplash.com/photo-1607400201515-c2c41c07d307?auto=format&fit=crop&w=700&q=85"
+          alt="Precision sealing and insulation work on a job site"
+          loading="lazy"
+        />
+        <div class="photo-card-label">Pipe insulation &amp; sealing · View Royal</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT / TRUST SPLIT ────────────────────────────────── -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-inner">
+
+      <!-- Photo -->
+      <div class="about-photo-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=88"
+          alt="M&R tradesperson working on pipes"
           loading="lazy"
         />
       </div>
-      <!-- Copy column -->
+
+      <!-- Copy -->
       <div class="about-copy">
-        <div class="slabel">The M&amp;R Difference</div>
-        <h2 class="stitle">Local trades,<br/>done right.</h2>
-        <p class="ssub">
-          We're not a franchise call centre. We're a Langford-based team with over 15 years
-          fixing the pipes and heating systems of Greater Victoria — and we treat every job like it's our own home.
+        <div class="section-label">The M&amp;R Difference</div>
+        <h2 class="section-title">Local trades,<br/>done right.</h2>
+        <p class="section-sub">
+          We're not a franchise call centre. We're a Langford-based team with 15+ years
+          fixing pipes and heating systems across Greater Victoria — and we treat every
+          job like it's our own home.
         </p>
         <ul class="promise-list">
           <li class="promise-item">
-            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="promise-check">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
             <div class="promise-text"><strong>Real people answer the phone</strong> — not a dispatcher three provinces away.</div>
           </li>
           <li class="promise-item">
-            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <div class="promise-text"><strong>Fully stocked service vans</strong> — most repairs done in a single visit.</div>
+            <div class="promise-check">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="promise-text"><strong>Fully stocked service vans</strong> — most jobs done in a single visit.</div>
           </li>
           <li class="promise-item">
-            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="promise-check">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
             <div class="promise-text"><strong>No price gouging on emergency calls</strong> — upfront quotes before we start.</div>
           </li>
           <li class="promise-item">
-            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <div class="promise-text"><strong>BC Red Seal certified</strong> — licensed and fully insured for residential &amp; commercial.</div>
+            <div class="promise-check">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="promise-text"><strong>BC Red Seal certified</strong> — licensed and fully insured, residential &amp; commercial.</div>
           </li>
           <li class="promise-item">
-            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="promise-check">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
             <div class="promise-text"><strong>We clean up when we leave</strong> — job site tidier than we found it, every time.</div>
           </li>
         </ul>
       </div>
+
     </div>
   </div>
 </section>
 
-<!-- ── STATS (photo under dark overlay) ─── -->
-<section class="stats">
-  <div class="ct">
-    <div class="stats-g">
-      <div class="rv">
-        <div class="stn" data-target="15" data-suffix="+">0</div>
-        <div class="stl">Years in Greater Victoria</div>
+<!-- ── STATS ──────────────────────────────────────────────── -->
+<section class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div>
+        <div class="stat-number">15+</div>
+        <div class="stat-label">Years in Greater Victoria</div>
       </div>
-      <div class="rv d1">
-        <div class="stn" data-target="2400" data-suffix="+">0</div>
-        <div class="stl">Jobs Completed</div>
+      <div>
+        <div class="stat-number">2,400+</div>
+        <div class="stat-label">Jobs Completed</div>
       </div>
-      <div class="rv d2">
-        <div class="stn" data-target="98" data-suffix="%">0</div>
-        <div class="stl">Customer Satisfaction</div>
+      <div>
+        <div class="stat-number">98%</div>
+        <div class="stat-label">Customer Satisfaction</div>
       </div>
-      <div class="rv d3">
-        <div class="stn">24/7</div>
-        <div class="stl">Emergency Availability</div>
+      <div>
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Emergency Availability</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── CONTACT + FORM ─── -->
-<section class="contacts" id="contact">
-  <div class="ct">
-    <div class="contacts-inner">
+<!-- ── CONTACT + FORM ─────────────────────────────────────── -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-inner">
+
       <!-- Info side -->
-      <div class="rvl">
-        <div class="slabel">Get In Touch</div>
-        <h2 class="stitle">Ready when<br/>you need us.</h2>
-        <p class="ssub" style="margin-bottom:1.5rem">
-          Emergency at 2 am or a planned install next month — reach out and we respond fast.
-          No hold music. No call centre. Real people answering.
+      <div>
+        <div class="section-label">Get In Touch</div>
+        <h2 class="section-title">Ready when<br/>you need us.</h2>
+        <p class="section-sub" style="margin-bottom:1.5rem">
+          Emergency at 2 am or a planned install next month — reach out and we
+          respond fast. No hold music. No call centre. Real people answering.
         </p>
-        <ul class="clist">
-          <li class="ci">
-            <div class="ciw"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div>
-            <div><div class="clbl">Phone (24/7)</div><div class="cval"><a href="tel:2505072924">250-507-2924</a></div></div>
+        <ul class="contact-info-list">
+          <li class="contact-info-item">
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+            </div>
+            <div>
+              <div class="contact-info-label">Phone (24/7)</div>
+              <div class="contact-info-value"><a href="tel:2505072924">250-507-2924</a></div>
+            </div>
           </li>
-          <li class="ci">
-            <div class="ciw"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-            <div><div class="clbl">Email</div><div class="cval"><a href="mailto:m.phillips@shaw.ca">m.phillips@shaw.ca</a></div></div>
+          <li class="contact-info-item">
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="contact-info-label">Email</div>
+              <div class="contact-info-value"><a href="mailto:m.phillips@shaw.ca">m.phillips@shaw.ca</a></div>
+            </div>
           </li>
-          <li class="ci">
-            <div class="ciw"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-            <div><div class="clbl">Location</div><div class="cval">2920 Mount Wells Drive, Langford BC V9B 4S1</div></div>
+          <li class="contact-info-item">
+            <div class="contact-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="contact-info-label">Location</div>
+              <div class="contact-info-value">2920 Mount Wells Drive, Langford BC V9B 4S1</div>
+            </div>
           </li>
         </ul>
       </div>
-      <!-- Form side -->
-      <div class="rvr">
-        <div class="fcard">
-          <div class="ft">Request a Free Quote</div>
-          <div class="fs">We respond same day — usually within the hour.</div>
-          <form onsubmit="return handleForm(event)">
-            <div class="frow">
-              <div class="fg"><label class="fl">First Name</label><input type="text" class="fi" placeholder="Sarah" required/></div>
-              <div class="fg"><label class="fl">Last Name</label><input type="text" class="fi" placeholder="Thompson" required/></div>
+
+      <!-- Form -->
+      <div class="form-card">
+        <div class="form-title">Request a Free Quote</div>
+        <div class="form-sub">We respond same day — usually within the hour.</div>
+        <form onsubmit="return handleForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" placeholder="Sarah" required/>
             </div>
-            <div class="fg"><label class="fl">Phone Number</label><input type="tel" class="fi" placeholder="250-555-0100" required/></div>
-            <div class="fg">
-              <label class="fl">Service Needed</label>
-              <select class="fsel" required>
-                <option value="">Select a service…</option>
-                <option>Emergency Plumbing</option>
-                <option>Water Heater</option>
-                <option>Heating System</option>
-                <option>Drain Clearing</option>
-                <option>Leak Detection</option>
-                <option>Pipe Repair / Repiping</option>
-                <option>Other</option>
-              </select>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" placeholder="Thompson" required/>
             </div>
-            <div class="fg">
-              <label class="fl">What's happening?</label>
-              <textarea class="fta" placeholder="e.g. Pipe burst in the basement, water coming through the floor…"></textarea>
-            </div>
-            <button type="submit" class="fbtn">Send Request →</button>
-          </form>
-        </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-input" placeholder="250-555-0100" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Service Needed</label>
+            <select class="form-select" required>
+              <option value="">Select a service…</option>
+              <option>Emergency Plumbing</option>
+              <option>Water Heater</option>
+              <option>Heating System</option>
+              <option>Drain Clearing</option>
+              <option>Leak Detection</option>
+              <option>Pipe Repair / Repiping</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">What's happening?</label>
+            <textarea class="form-textarea" placeholder="e.g. Pipe burst in the basement, water coming through the floor…"></textarea>
+          </div>
+          <button type="submit" class="form-submit">Send Request →</button>
+        </form>
       </div>
+
     </div>
   </div>
 </section>
 
-<!-- ── FOOTER ─── -->
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
 <footer>
-  <div class="flogo"><span>M&amp;R</span> Plumbing &amp; Heating</div>
-  <div class="ftag">Langford, BC &nbsp;·&nbsp; BC Licensed &amp; Insured &nbsp;·&nbsp; 24/7 Emergency Service</div>
-  <div class="flinks">
+  <div class="footer-logo"><span>M&amp;R</span> Plumbing &amp; Heating</div>
+  <div class="footer-tagline">Langford, BC · BC Licensed &amp; Insured · 24/7 Emergency Service</div>
+  <div class="footer-links">
     <a href="#services">Services</a>
+    <a href="#work">Our Work</a>
     <a href="#about">About</a>
     <a href="tel:2505072924">250-507-2924</a>
     <a href="mailto:m.phillips@shaw.ca">Email Us</a>
     <a href="#contact">Free Quote</a>
   </div>
-  <div class="fcopy">
-    © 2026 M&amp;R Plumbing and Heating Ltd. &nbsp;·&nbsp; 2920 Mount Wells Drive, Langford BC V9B 4S1<br/>
-    <span style="opacity:.55">Photos: Unsplash (used under the Unsplash License, free for commercial use)</span>
+  <div class="footer-copy">
+    © 2026 M&amp;R Plumbing and Heating Ltd. · 2920 Mount Wells Drive, Langford BC V9B 4S1<br/>
+    <span style="opacity:.5">Photography: Unsplash (free for commercial use under the Unsplash License)</span>
   </div>
 </footer>
 
 <script>
-/* Water drop particles */
-(function () {
-  const c = document.getElementById('drops');
-  for (let i = 0; i < 20; i++) {
-    const d = document.createElement('div');
-    d.className = 'drop';
-    const w = 1 + Math.random() * 1.8;
-    d.style.cssText = [
-      'left:'               + (Math.random() * 100) + 'vw',
-      'width:'              + w + 'px',
-      'height:'             + (w * 4 + Math.random() * 8) + 'px',
-      'animation-duration:' + (5 + Math.random() * 9) + 's',
-      'animation-delay:'    + (Math.random() * 12) + 's',
-    ].join(';');
-    c.appendChild(d);
-  }
-})();
-
-/* Scroll reveal + counters */
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (!e.isIntersecting) return;
-    e.target.classList.add('vis');
-    const el = e.target.querySelector('[data-target]');
-    if (el && !el.dataset.done) {
-      el.dataset.done = '1';
-      const target = +el.dataset.target;
-      const suffix = el.dataset.suffix || '+';
-      const t0 = performance.now();
-      const dur = 1900;
-      (function step(now) {
-        const p = Math.min((now - t0) / dur, 1);
-        const v = Math.round((1 - Math.pow(1 - p, 3)) * target);
-        el.textContent = v.toLocaleString() + suffix;
-        if (p < 1) requestAnimationFrame(step);
-        else el.textContent = target.toLocaleString() + suffix;
-      })(t0);
-    }
-  });
-}, { threshold: 0.18 });
-
-document.querySelectorAll('.rv, .rvl, .rvr').forEach(el => io.observe(el));
-
-/* Form */
 function handleForm(e) {
   e.preventDefault();
-  const btn = e.target.querySelector('.fbtn');
+  const btn = e.target.querySelector('.form-submit');
   btn.textContent = '✓ Request sent — we\'ll call you shortly!';
   btn.style.background = '#16a34a';
   btn.disabled = true;
