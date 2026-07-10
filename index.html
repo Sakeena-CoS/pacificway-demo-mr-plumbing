@@ -9,19 +9,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:           #060d1b;
-      --surface:      #0b1828;
-      --card:         #0e1f38;
-      --copper:       #c8773a;
-      --copper-lt:    #e8a060;
-      --copper-dk:    #8b4f20;
-      --water:        #0ea5e9;
-      --water-dim:    rgba(14,165,233,0.25);
-      --steel:        #4b6180;
-      --muted:        #8faabb;
-      --fg:           #e8f2ff;
-      --border:       rgba(255,255,255,0.07);
-      --card-glow:    rgba(200,119,58,0.11);
+      --bg:        #060d1b;
+      --surface:   #0b1828;
+      --card:      #0e1f38;
+      --copper:    #c8773a;
+      --copper-lt: #e8a060;
+      --copper-dk: #8b4f20;
+      --water:     #0ea5e9;
+      --steel:     #4b6180;
+      --muted:     #8faabb;
+      --fg:        #e8f2ff;
+      --border:    rgba(255,255,255,0.08);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -33,22 +31,19 @@
       overflow-x: hidden;
     }
 
-    /* ── PIPE GRID BACKGROUND ─────────────────────────────────── */
-    .pipe-bg {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      overflow: hidden; opacity: 0.14;
+    /* ─── PIPE GRID OVERLAY (subtle texture on hero) ─── */
+    .pipe-overlay {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .07;
     }
-    .pipe-bg svg { width: 100%; height: 100%; }
+    .pipe-overlay svg { width: 100%; height: 100%; }
     .pl { stroke: #c8773a; stroke-width: 2; fill: none;
-          stroke-dasharray: 22 10;
-          animation: pflow 5s linear infinite; }
+          stroke-dasharray: 22 10; animation: pflow 5s linear infinite; }
     .pw { stroke: #0ea5e9; stroke-width: 1.5; fill: none;
-          stroke-dasharray: 10 26; opacity: .75;
-          animation: pflow 3s linear infinite; }
+          stroke-dasharray: 10 26; opacity: .8; animation: pflow 3s linear infinite; }
     @keyframes pflow { to { stroke-dashoffset: -96; } }
-    .pj { fill: #c8773a; }
+    .pj  { fill: #c8773a; }
 
-    /* ── PARTICLE DROPS ───────────────────────────────────────── */
+    /* ─── WATER DROP PARTICLES ─── */
     #drops { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
     .drop {
       position: absolute; border-radius: 50%;
@@ -57,12 +52,12 @@
     }
     @keyframes dfal {
       0%   { transform: translateY(-20px); opacity: 0; }
-      8%   { opacity: .55; }
-      92%  { opacity: .35; }
+      8%   { opacity: .45; }
+      92%  { opacity: .25; }
       100% { transform: translateY(102vh); opacity: 0; }
     }
 
-    /* ── NAV ──────────────────────────────────────────────────── */
+    /* ─── NAV ─── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 400;
       display: flex; align-items: center; justify-content: space-between;
@@ -93,24 +88,30 @@
       nav { padding: .75rem 1.25rem; }
     }
 
-    /* ── HERO ─────────────────────────────────────────────────── */
+    /* ─── HERO ─── */
     .hero {
-      min-height: 100svh; position: relative;
+      min-height: 100svh;
+      position: relative;
       display: flex; align-items: center;
-      padding: 7rem 2rem 5rem; overflow: hidden;
-    }
-    .h-atm {
-      position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 80% 65% at 50% -8%, rgba(200,119,58,.25) 0%, transparent 60%),
-        radial-gradient(ellipse 55% 55% at 88% 88%, rgba(14,165,233,.16) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 40% at 10% 65%, rgba(200,119,58,.09) 0%, transparent 55%);
-    }
-    .h-grid {
-      position: absolute; inset: 0; pointer-events: none;
+      padding: 7rem 2rem 5rem;
+      overflow: hidden;
+      /* Real photo — welder with sparks, dark and dramatic */
       background-image:
-        linear-gradient(rgba(200,119,58,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(200,119,58,.035) 1px, transparent 1px);
+        linear-gradient(108deg,
+          rgba(6,13,27,0.97) 0%,
+          rgba(6,13,27,0.90) 38%,
+          rgba(6,13,27,0.60) 65%,
+          rgba(6,13,27,0.28) 100%),
+        url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1920&q=85');
+      background-size: cover;
+      background-position: center 38%;
+    }
+    /* Grid texture on top of photo */
+    .h-grid {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background-image:
+        linear-gradient(rgba(200,119,58,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,119,58,.04) 1px, transparent 1px);
       background-size: 64px 64px;
     }
     .h-inner {
@@ -119,15 +120,16 @@
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 4rem; align-items: center;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 840px) {
       .h-inner { grid-template-columns: 1fr; }
       .h-vis   { display: none; }
     }
 
+    /* Pulsing live badge */
     .ebadge {
       display: inline-flex; align-items: center; gap: .55rem;
-      background: rgba(14,165,233,.1);
-      border: 1px solid rgba(14,165,233,.28);
+      background: rgba(14,165,233,.12);
+      border: 1px solid rgba(14,165,233,.3);
       color: var(--water); font-size: .7rem;
       font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
       padding: .38rem 1rem; border-radius: 100px; margin-bottom: 1.5rem;
@@ -143,7 +145,7 @@
 
     .htitle {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+      font-size: clamp(2.8rem, 6.5vw, 5.4rem);
       font-weight: 800; letter-spacing: -.045em; line-height: 1.0;
       margin-bottom: 1.25rem;
     }
@@ -157,7 +159,6 @@
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
     .hsub {
       font-size: clamp(1rem, 2.2vw, 1.2rem); color: var(--muted);
       line-height: 1.82; margin-bottom: 2.5rem; max-width: 460px;
@@ -173,57 +174,59 @@
     }
     .btnp {
       background: var(--copper); color: #fff;
-      box-shadow: 0 4px 26px rgba(200,119,58,.38);
+      box-shadow: 0 4px 26px rgba(200,119,58,.4);
     }
     .btnp:hover { background: var(--copper-lt); transform: translateY(-2px);
-                  box-shadow: 0 10px 34px rgba(200,119,58,.52); }
+                  box-shadow: 0 10px 34px rgba(200,119,58,.55); }
     .btng {
-      background: rgba(255,255,255,.05); color: var(--fg);
-      border: 1px solid var(--border);
+      background: rgba(255,255,255,.07); color: var(--fg);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(8px);
     }
-    .btng:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
+    .btng:hover { background: rgba(255,255,255,.13); transform: translateY(-1px); }
 
     .htrust { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .tch { display: flex; align-items: center; gap: .4rem;
            font-size: .78rem; color: var(--muted); }
     .tch svg { color: var(--copper); flex-shrink: 0; }
 
-    /* Hero illustration */
-    .h-vis { display: flex; justify-content: center; align-items: center; }
-    .h-vis-wrap {
-      position: relative; width: 440px; height: 440px;
+    /* Hero right: glassmorphism trust card + SVG illustration */
+    .h-vis {
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
     }
-    /* Glow halo behind the illustration */
-    .h-vis-wrap::before {
+    .h-vis-inner {
+      position: relative; width: 420px;
+    }
+    /* Glow behind illustration */
+    .h-vis-inner::before {
       content: '';
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%,-50%);
-      width: 340px; height: 340px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(200,119,58,.18) 0%, transparent 70%);
+      width: 320px; height: 320px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,119,58,.2) 0%, transparent 70%);
       animation: halo 4s ease-in-out infinite alternate;
     }
     @keyframes halo {
-      from { opacity: .6; transform: translate(-50%,-50%) scale(1); }
-      to   { opacity: 1;  transform: translate(-50%,-50%) scale(1.12); }
+      from { opacity: .5; transform: translate(-50%,-50%) scale(1); }
+      to   { opacity: 1;  transform: translate(-50%,-50%) scale(1.14); }
     }
 
-    /* ── URGENCY STRIP ────────────────────────────────────────── */
+    /* ─── URGENCY STRIP ─── */
     .ustrip {
       position: relative; z-index: 2;
-      background: linear-gradient(135deg, rgba(200,119,58,.15), rgba(200,119,58,.07));
-      border-top: 1px solid rgba(200,119,58,.2);
-      border-bottom: 1px solid rgba(200,119,58,.2);
+      background: linear-gradient(135deg, rgba(200,119,58,.17), rgba(200,119,58,.08));
+      border-top: 1px solid rgba(200,119,58,.22);
+      border-bottom: 1px solid rgba(200,119,58,.22);
       padding: .9rem 2rem; text-align: center;
-      font-size: .84rem; color: var(--copper-lt); letter-spacing: .04em;
-      display: flex; align-items: center; justify-content: center; gap: .75rem;
-      flex-wrap: wrap;
+      font-size: .83rem; color: var(--copper-lt); letter-spacing: .04em;
+      display: flex; align-items: center; justify-content: center; gap: .75rem; flex-wrap: wrap;
     }
     .ustrip-sep { color: rgba(200,119,58,.35); }
 
-    /* ── LAYOUT HELPERS ───────────────────────────────────────── */
+    /* ─── LAYOUT ─── */
     section { position: relative; z-index: 2; }
     .ct { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-
     .slabel {
       font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
       color: var(--copper); font-weight: 700; margin-bottom: .7rem;
@@ -236,10 +239,12 @@
       font-weight: 800; letter-spacing: -.035em; line-height: 1.05;
       margin-bottom: .9rem;
     }
-    .ssub { color: var(--muted); font-size: 1.05rem; max-width: 490px;
-            line-height: 1.78; margin-bottom: 3.5rem; }
+    .ssub {
+      color: var(--muted); font-size: 1.05rem; max-width: 490px;
+      line-height: 1.78; margin-bottom: 3.5rem;
+    }
 
-    /* ── SERVICES ─────────────────────────────────────────────── */
+    /* ─── SERVICES ─── */
     .svcs { padding: 7rem 0; }
     .svcs-grid {
       display: grid;
@@ -247,21 +252,19 @@
       gap: 1.5rem;
     }
     .sc {
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: var(--card); border: 1px solid var(--border);
       border-radius: 18px; padding: 2rem;
       position: relative; overflow: hidden;
-      transition: all .3s ease; cursor: default;
+      transition: all .3s ease;
     }
     .sc::before {
-      content:''; position:absolute; inset:0;
-      background: radial-gradient(circle at 50% 0%, var(--card-glow), transparent 65%);
+      content:''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(200,119,58,.11), transparent 65%);
       opacity: 0; transition: opacity .3s;
     }
     .sc:hover { border-color: rgba(200,119,58,.38); transform: translateY(-5px);
-                box-shadow: 0 20px 52px rgba(0,0,0,.45); }
+                box-shadow: 0 20px 52px rgba(0,0,0,.5); }
     .sc:hover::before { opacity: 1; }
-
     .sci {
       width: 54px; height: 54px;
       background: rgba(200,119,58,.1); border: 1px solid rgba(200,119,58,.2);
@@ -270,25 +273,78 @@
     }
     .sc:hover .sci { background: rgba(200,119,58,.2); border-color: rgba(200,119,58,.4); }
     .sci svg { color: var(--copper); }
-
     .scn { font-family: 'Space Grotesk', sans-serif;
            font-size: 1.1rem; font-weight: 700; margin-bottom: .55rem; }
     .scd { font-size: .88rem; color: var(--muted); line-height: 1.72; }
-
     .sc-bar {
       position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--copper), var(--water), var(--copper));
-      background-size: 200% 100%;
-      opacity: 0; transition: opacity .3s;
+      background-size: 200% 100%; opacity: 0; transition: opacity .3s;
       animation: shimmer 3s linear infinite;
     }
     .sc:hover .sc-bar { opacity: 1; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
-    /* ── STATS ────────────────────────────────────────────────── */
+    /* ─── ABOUT / PHOTO SPLIT ─── */
+    .about { padding: 7rem 0; }
+    .about-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 520px; border-radius: 24px; overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 32px 80px rgba(0,0,0,.5);
+    }
+    @media (max-width: 768px) {
+      .about-inner { grid-template-columns: 1fr; }
+      .about-photo { min-height: 280px; }
+    }
+    .about-photo {
+      position: relative; overflow: hidden;
+    }
+    .about-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      display: block;
+      transition: transform 6s ease;
+    }
+    .about-photo:hover img { transform: scale(1.04); }
+    /* Right-edge fade into the copy panel */
+    .about-photo::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 55%, rgba(11,24,40,.95) 100%);
+    }
+    .about-copy {
+      background: var(--surface); padding: 3.5rem 3rem;
+      display: flex; flex-direction: column; justify-content: center;
+      border-left: 1px solid var(--border);
+    }
+    .about-copy .ssub { margin-bottom: 2rem; max-width: none; }
+    .promise-list {
+      list-style: none; display: flex; flex-direction: column; gap: 1rem;
+    }
+    .promise-item {
+      display: flex; align-items: flex-start; gap: .85rem;
+    }
+    .promise-dot {
+      width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+      background: rgba(200,119,58,.15); border: 1.5px solid rgba(200,119,58,.4);
+      display: flex; align-items: center; justify-content: center; margin-top: .1rem;
+    }
+    .promise-dot svg { color: var(--copper); }
+    .promise-text { font-size: .9rem; color: var(--muted); line-height: 1.6; }
+    .promise-text strong { color: var(--fg); }
+
+    /* ─── STATS ─── */
     .stats {
-      padding: 5rem 0;
-      background: var(--surface);
+      padding: 5.5rem 0;
+      position: relative;
+      /* Real photo under the stats — gives depth without distraction */
+      background-image:
+        linear-gradient(rgba(6,13,27,.9), rgba(6,13,27,.9)),
+        url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
@@ -299,7 +355,7 @@
     }
     .stn {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+      font-size: clamp(2.8rem, 5.5vw, 4.4rem);
       font-weight: 800; letter-spacing: -.05em; line-height: 1;
       background: linear-gradient(135deg, var(--copper-lt), var(--copper));
       -webkit-background-clip: text; background-clip: text;
@@ -309,25 +365,20 @@
     .stl { font-size: .82rem; color: var(--muted); font-weight: 500;
            text-transform: uppercase; letter-spacing: .06em; }
 
-    /* ── CONTACT / FORM ───────────────────────────────────────── */
+    /* ─── CONTACT / FORM ─── */
     .contacts { padding: 7rem 0; }
     .contacts-inner {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 5rem; align-items: start;
     }
-    @media (max-width: 768px) {
-      .contacts-inner { grid-template-columns: 1fr; gap: 2.5rem; }
-    }
-
+    @media (max-width: 768px) { .contacts-inner { grid-template-columns: 1fr; gap: 2.5rem; } }
     .fcard {
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: var(--card); border: 1px solid var(--border);
       border-radius: 20px; padding: 2.5rem;
     }
     .ft { font-family: 'Space Grotesk', sans-serif;
           font-size: 1.5rem; font-weight: 700; margin-bottom: .45rem; }
     .fs { color: var(--muted); font-size: .88rem; margin-bottom: 1.85rem; }
-
     .fg { margin-bottom: 1.2rem; }
     .fl { display: block; font-size: .78rem; font-weight: 600; color: var(--muted);
           margin-bottom: .45rem; letter-spacing: .04em; text-transform: uppercase; }
@@ -342,22 +393,20 @@
     .fsel option { background: var(--card); }
     .fi:focus,.fsel:focus,.fta:focus {
       outline: none; border-color: var(--copper);
-      background: rgba(200,119,58,.06);
-      box-shadow: 0 0 0 3px rgba(200,119,58,.14);
+      background: rgba(200,119,58,.07);
+      box-shadow: 0 0 0 3px rgba(200,119,58,.15);
     }
     .fta { resize: vertical; min-height: 96px; }
     .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media (max-width: 440px) { .frow { grid-template-columns: 1fr; } }
-
     .fbtn {
       width: 100%; padding: 1rem; background: var(--copper); color: #fff;
       border: none; border-radius: 10px; font-size: 1rem; font-weight: 700;
       cursor: pointer; font-family: inherit; transition: all .25s;
-      box-shadow: 0 4px 22px rgba(200,119,58,.38);
+      box-shadow: 0 4px 22px rgba(200,119,58,.4);
     }
     .fbtn:hover { background: var(--copper-lt); transform: translateY(-2px);
-                  box-shadow: 0 10px 30px rgba(200,119,58,.52); }
-
+                  box-shadow: 0 10px 30px rgba(200,119,58,.55); }
     .clist { list-style: none; display: flex; flex-direction: column;
              gap: 1.5rem; margin-top: 1.75rem; }
     .ci { display: flex; align-items: center; gap: 1rem; }
@@ -373,12 +422,10 @@
     .cval a { color: var(--fg); text-decoration: none; }
     .cval a:hover { color: var(--copper-lt); }
 
-    /* ── FOOTER ───────────────────────────────────────────────── */
+    /* ─── FOOTER ─── */
     footer {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 3rem 2rem; text-align: center;
-      position: relative; z-index: 2;
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 3rem 2rem; text-align: center; position: relative; z-index: 2;
     }
     .flogo { font-family: 'Space Grotesk', sans-serif;
              font-size: 1.25rem; font-weight: 800; color: var(--fg);
@@ -390,9 +437,9 @@
     .flinks a { color: var(--muted); font-size: .83rem; text-decoration: none;
                 transition: color .2s; }
     .flinks a:hover { color: var(--copper); }
-    .fcopy { color: var(--steel); font-size: .76rem; }
+    .fcopy { color: var(--steel); font-size: .74rem; line-height: 1.6; }
 
-    /* ── SCROLL REVEAL ────────────────────────────────────────── */
+    /* ─── SCROLL REVEAL ─── */
     .rv   { opacity: 0; transform: translateY(26px);
             transition: opacity .65s ease, transform .65s ease; }
     .rvl  { opacity: 0; transform: translateX(-30px);
@@ -400,88 +447,62 @@
     .rvr  { opacity: 0; transform: translateX(30px);
             transition: opacity .65s ease, transform .65s ease; }
     .vis  { opacity: 1 !important; transform: none !important; }
-    .d1 { transition-delay: .1s; }
-    .d2 { transition-delay: .2s; }
-    .d3 { transition-delay: .3s; }
-    .d4 { transition-delay: .4s; }
-    .d5 { transition-delay: .5s; }
-    .d6 { transition-delay: .6s; }
+    .d1 { transition-delay: .1s; } .d2 { transition-delay: .2s; }
+    .d3 { transition-delay: .3s; } .d4 { transition-delay: .4s; }
+    .d5 { transition-delay: .5s; } .d6 { transition-delay: .6s; }
   </style>
 </head>
 <body>
 
-<!-- ── PIPE GRID BACKGROUND ──────────────────────────────────── -->
-<div class="pipe-bg" aria-hidden="true">
-  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-    <!-- Horizontal pipes -->
-    <line class="pl" x1="0" y1="115" x2="1440" y2="115" />
-    <line class="pw" x1="0" y1="115" x2="1440" y2="115" style="animation-delay:-.8s"/>
-    <line class="pl" x1="0" y1="345" x2="1440" y2="345" style="animation-delay:-1.4s"/>
-    <line class="pw" x1="0" y1="345" x2="1440" y2="345" style="animation-delay:-2.2s"/>
-    <line class="pl" x1="0" y1="575" x2="1440" y2="575" style="animation-delay:-.4s"/>
-    <line class="pw" x1="0" y1="575" x2="1440" y2="575" style="animation-delay:-1.7s"/>
-    <line class="pl" x1="0" y1="800" x2="1440" y2="800" style="animation-delay:-2.5s"/>
-    <!-- Vertical pipes -->
-    <line class="pl" x1="230" y1="0" x2="230" y2="900" style="animation-delay:-.3s"/>
-    <line class="pw" x1="230" y1="0" x2="230" y2="900" style="animation-delay:-1.1s"/>
-    <line class="pl" x1="460" y1="0" x2="460" y2="900" style="animation-delay:-1.9s"/>
-    <line class="pl" x1="690" y1="0" x2="690" y2="900" style="animation-delay:-.7s"/>
-    <line class="pw" x1="690" y1="0" x2="690" y2="900" style="animation-delay:-2.6s"/>
-    <line class="pl" x1="920" y1="0" x2="920" y2="900" style="animation-delay:-1.2s"/>
-    <line class="pl" x1="1150" y1="0" x2="1150" y2="900" style="animation-delay:-.5s"/>
-    <line class="pw" x1="1150" y1="0" x2="1150" y2="900" style="animation-delay:-2s"/>
-    <!-- Joints at intersections -->
-    <circle class="pj" cx="230" cy="115" r="5" opacity=".85"/>
-    <circle class="pj" cx="460" cy="115" r="4" opacity=".75"/>
-    <circle class="pj" cx="690" cy="115" r="6" opacity=".9"/>
-    <circle class="pj" cx="920" cy="115" r="4" opacity=".75"/>
-    <circle class="pj" cx="1150" cy="115" r="5" opacity=".85"/>
-    <circle class="pj" cx="230" cy="345" r="6" opacity=".9"/>
-    <circle class="pj" cx="460" cy="345" r="4" opacity=".75"/>
-    <circle class="pj" cx="690" cy="345" r="7" opacity=".9"/>
-    <circle class="pj" cx="920" cy="345" r="4" opacity=".75"/>
-    <circle class="pj" cx="1150" cy="345" r="5" opacity=".85"/>
-    <circle class="pj" cx="230" cy="575" r="4" opacity=".75"/>
-    <circle class="pj" cx="460" cy="575" r="6" opacity=".9"/>
-    <circle class="pj" cx="690" cy="575" r="4" opacity=".75"/>
-    <circle class="pj" cx="920" cy="575" r="7" opacity=".9"/>
-    <circle class="pj" cx="1150" cy="575" r="4" opacity=".75"/>
-  </svg>
-</div>
-
-<!-- ── WATER DROP PARTICLES ──────────────────────────────────── -->
+<!-- ── WATER DROP PARTICLES ─── -->
 <div id="drops" aria-hidden="true"></div>
 
-<!-- ── NAV ──────────────────────────────────────────────────── -->
+<!-- ── NAV ─── -->
 <nav>
   <div class="nbrand">
-    <!-- Pipe wrench logo mark -->
     <svg class="nlogo" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="19" cy="19" r="19" fill="rgba(200,119,58,.15)"/>
-      <!-- wrench body -->
       <path d="M10 28 L22 16" stroke="#c8773a" stroke-width="3" stroke-linecap="round"/>
-      <!-- wrench head -->
       <circle cx="25" cy="13" r="5.5" stroke="#c8773a" stroke-width="2.5" fill="none"/>
       <circle cx="25" cy="13" r="2" fill="#c8773a"/>
-      <!-- water drop -->
       <path d="M13 30 Q13 34 10 34 Q7 34 7 31 Q7 28 10 25 Q13 28 13 31Z" fill="#0ea5e9" opacity=".75"/>
     </svg>
     <div class="nname"><span>M&amp;R</span> Plumbing &amp; Heating</div>
   </div>
   <div class="nlinks">
     <a href="#services" class="hms">Services</a>
-    <a href="#contact"  class="hms">Contact</a>
+    <a href="#about"   class="hms">About</a>
+    <a href="#contact" class="hms">Contact</a>
     <a href="tel:2505072924" class="ncta">📞 Call Now</a>
   </div>
 </nav>
 
-<!-- ── HERO ──────────────────────────────────────────────────── -->
+<!-- ── HERO (real photo background) ─── -->
 <section class="hero">
-  <div class="h-atm" aria-hidden="true"></div>
+  <!-- Subtle pipe grid texture over photo -->
+  <div class="pipe-overlay" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <line class="pl" x1="0" y1="115" x2="1440" y2="115"/>
+      <line class="pw" x1="0" y1="115" x2="1440" y2="115" style="animation-delay:-.8s"/>
+      <line class="pl" x1="0" y1="345" x2="1440" y2="345" style="animation-delay:-1.4s"/>
+      <line class="pw" x1="0" y1="345" x2="1440" y2="345" style="animation-delay:-2.2s"/>
+      <line class="pl" x1="0" y1="575" x2="1440" y2="575" style="animation-delay:-.4s"/>
+      <line class="pl" x1="230" y1="0" x2="230" y2="900" style="animation-delay:-.3s"/>
+      <line class="pw" x1="230" y1="0" x2="230" y2="900" style="animation-delay:-1.1s"/>
+      <line class="pl" x1="690" y1="0" x2="690" y2="900" style="animation-delay:-.7s"/>
+      <line class="pl" x1="1150" y1="0" x2="1150" y2="900" style="animation-delay:-.5s"/>
+      <circle class="pj" cx="230" cy="115" r="5" opacity=".85"/>
+      <circle class="pj" cx="690" cy="115" r="6" opacity=".9"/>
+      <circle class="pj" cx="1150" cy="115" r="5" opacity=".85"/>
+      <circle class="pj" cx="230" cy="345" r="6" opacity=".9"/>
+      <circle class="pj" cx="690" cy="345" r="7" opacity=".9"/>
+      <circle class="pj" cx="1150" cy="345" r="5" opacity=".85"/>
+    </svg>
+  </div>
   <div class="h-grid" aria-hidden="true"></div>
 
   <div class="h-inner ct">
-    <!-- Text side -->
+    <!-- Text column -->
     <div class="h-text">
       <div class="ebadge"><div class="pdot"></div> 24 / 7 Emergency Response</div>
       <h1 class="htitle">
@@ -516,125 +537,98 @@
       </div>
     </div>
 
-    <!-- Illustration side -->
+    <!-- Right column: animated SVG illustration floating over the photo -->
     <div class="h-vis" aria-hidden="true">
-      <div class="h-vis-wrap">
-        <svg viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:relative;z-index:1">
+      <div class="h-vis-inner">
+        <svg viewBox="0 0 440 440" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;position:relative;z-index:1">
           <defs>
-            <linearGradient id="cpg" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%"   stop-color="#6b3510"/>
-              <stop offset="32%"  stop-color="#c8773a"/>
-              <stop offset="62%"  stop-color="#e8a060"/>
-              <stop offset="100%" stop-color="#9c5420"/>
-            </linearGradient>
             <linearGradient id="cpgv" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%"   stop-color="#6b3510"/>
               <stop offset="32%"  stop-color="#c8773a"/>
               <stop offset="62%"  stop-color="#e8a060"/>
               <stop offset="100%" stop-color="#9c5420"/>
             </linearGradient>
+            <linearGradient id="cpg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"   stop-color="#6b3510"/>
+              <stop offset="32%"  stop-color="#c8773a"/>
+              <stop offset="62%"  stop-color="#e8a060"/>
+              <stop offset="100%" stop-color="#9c5420"/>
+            </linearGradient>
             <linearGradient id="stg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%"   stop-color="#5b7290"/>
+              <stop offset="0%" stop-color="#5b7290"/>
               <stop offset="100%" stop-color="#2d3f58"/>
             </linearGradient>
-            <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(200,119,58,.22)"/>
-              <stop offset="100%" stop-color="transparent"/>
-            </radialGradient>
-            <filter id="blur4">
-              <feGaussianBlur stdDeviation="4"/>
-            </filter>
+            <filter id="blur4"><feGaussianBlur stdDeviation="4"/></filter>
           </defs>
 
-          <!-- Background glow rings -->
-          <circle cx="220" cy="220" r="200" stroke="rgba(200,119,58,.09)" stroke-width="1" fill="none"/>
+          <!-- Atmosphere rings -->
+          <circle cx="220" cy="220" r="200" stroke="rgba(200,119,58,.08)" stroke-width="1" fill="none"/>
           <circle cx="220" cy="220" r="155" stroke="rgba(200,119,58,.06)" stroke-width="1" fill="none"/>
-          <circle cx="220" cy="220" r="110" stroke="rgba(200,119,58,.05)" stroke-width="1" fill="none"/>
-          <!-- Glow blob behind -->
-          <ellipse cx="220" cy="220" rx="180" ry="160" fill="url(#glow)" filter="url(#blur4)" opacity=".8"/>
+          <ellipse cx="220" cy="220" rx="180" ry="160"
+                   fill="rgba(200,119,58,.15)" filter="url(#blur4)" opacity=".7"/>
 
-          <!-- ── MAIN VERTICAL PIPE (center) ── -->
-          <!-- shadow/depth -->
-          <rect x="207" y="44" width="28" height="230" rx="5" fill="rgba(0,0,0,.35)"/>
-          <!-- pipe body -->
-          <rect x="203" y="42" width="34" height="230" rx="5" fill="url(#cpgv)"/>
-          <!-- shine strip -->
-          <rect x="206" y="42" width="7" height="230" rx="3.5" fill="rgba(255,255,255,.18)"/>
-          <!-- Dark side shade -->
-          <rect x="228" y="42" width="9" height="230" rx="4" fill="rgba(0,0,0,.18)"/>
+          <!-- Main vertical pipe -->
+          <rect x="207" y="42" width="8"  height="228" rx="4" fill="rgba(0,0,0,.3)"/>
+          <rect x="203" y="40" width="34" height="232" rx="5" fill="url(#cpgv)"/>
+          <rect x="206" y="40" width="7"  height="232" rx="3.5" fill="rgba(255,255,255,.18)"/>
+          <rect x="228" y="40" width="9"  height="232" rx="4"   fill="rgba(0,0,0,.18)"/>
 
-          <!-- ── ELBOW center→right ── -->
+          <!-- Elbow center→right -->
           <path d="M203 272 Q203 314 245 314" stroke="url(#cpg)" stroke-width="34" stroke-linecap="round" fill="none"/>
           <path d="M207 272 Q207 310 245 310" stroke="rgba(255,255,255,.12)" stroke-width="7" stroke-linecap="round" fill="none"/>
 
-          <!-- ── HORIZONTAL PIPE right ── -->
-          <rect x="245" y="297" width="130" height="34" rx="5" fill="rgba(0,0,0,.3)"/>
+          <!-- Horizontal pipe right -->
           <rect x="243" y="295" width="132" height="34" rx="5" fill="url(#cpg)"/>
-          <rect x="243" y="298" width="132" height="8" rx="4" fill="rgba(255,255,255,.17)"/>
-          <rect x="243" y="320" width="132" height="9" rx="4" fill="rgba(0,0,0,.18)"/>
+          <rect x="243" y="298" width="132" height="8"  rx="4" fill="rgba(255,255,255,.17)"/>
 
-          <!-- ── ELBOW right→down ── -->
+          <!-- Elbow right→down -->
           <path d="M375 295 Q408 295 408 328" stroke="url(#cpgv)" stroke-width="34" stroke-linecap="round" fill="none"/>
-          <path d="M375 299 Q404 299 404 328" stroke="rgba(255,255,255,.12)" stroke-width="7" stroke-linecap="round" fill="none"/>
-
-          <!-- ── VERTICAL PIPE right ── -->
           <rect x="391" y="328" width="34" height="90" rx="5" fill="url(#cpgv)"/>
-          <rect x="394" y="328" width="7" height="90" rx="3.5" fill="rgba(255,255,255,.17)"/>
+          <rect x="394" y="328" width="7"  height="90" rx="3.5" fill="rgba(255,255,255,.17)"/>
 
-          <!-- ── ELBOW center→left ── -->
+          <!-- Elbow center→left -->
           <path d="M203 272 Q203 314 162 314" stroke="url(#cpg)" stroke-width="34" stroke-linecap="round" fill="none"/>
-          <path d="M207 272 Q207 310 162 310" stroke="rgba(255,255,255,.12)" stroke-width="7" stroke-linecap="round" fill="none"/>
-
-          <!-- ── HORIZONTAL PIPE left ── -->
           <rect x="68" y="295" width="130" height="34" rx="5" fill="url(#cpg)" opacity=".9"/>
-          <rect x="68" y="298" width="130" height="8" rx="4" fill="rgba(255,255,255,.15)"/>
-
-          <!-- ── ELBOW left→down ── -->
+          <rect x="68" y="298" width="130" height="8"  rx="4" fill="rgba(255,255,255,.15)"/>
           <path d="M68 295 Q36 295 36 328" stroke="url(#cpgv)" stroke-width="34" stroke-linecap="round" fill="none"/>
-
-          <!-- ── VERTICAL PIPE left ── -->
           <rect x="19" y="328" width="34" height="70" rx="5" fill="url(#cpgv)" opacity=".88"/>
-          <rect x="22" y="328" width="7" height="70" rx="3.5" fill="rgba(255,255,255,.15)"/>
+          <rect x="22" y="328" width="7"  height="70" rx="3.5" fill="rgba(255,255,255,.15)"/>
 
-          <!-- ── VALVE on main pipe ── -->
+          <!-- Valve -->
           <rect x="196" y="122" width="48" height="48" rx="9" fill="url(#stg)" stroke="rgba(200,119,58,.25)" stroke-width="1.5"/>
           <rect x="201" y="127" width="38" height="38" rx="7" fill="rgba(8,20,42,.88)"/>
-          <!-- Valve handle stem -->
           <rect x="215" y="107" width="10" height="20" rx="4" fill="#768fa8"/>
-          <!-- Valve handle cross bar -->
-          <rect x="205" y="103" width="30" height="9" rx="4.5" fill="#5b7290"/>
+          <rect x="205" y="103" width="30" height="9"  rx="4.5" fill="#5b7290"/>
           <circle cx="220" cy="107" r="5" fill="#4a6180"/>
-          <!-- Valve indicator dot (glowing) -->
+          <!-- Valve glow -->
           <circle cx="220" cy="146" r="5" fill="#0ea5e9" opacity=".9"/>
           <circle cx="220" cy="146" r="8" fill="rgba(14,165,233,.3)">
-            <animate attributeName="r" values="6;12;6" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="r"       values="6;12;6"  dur="2s" repeatCount="indefinite"/>
             <animate attributeName="opacity" values=".4;0;.4" dur="2s" repeatCount="indefinite"/>
           </circle>
 
-          <!-- ── FLOWING WATER DROPLETS in main pipe ── -->
-          <circle cx="220" cy="80" r="5.5" fill="#0ea5e9" opacity=".85">
-            <animate attributeName="cy" values="70;270;70" dur="2.2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".85;.2;.85" dur="2.2s" repeatCount="indefinite"/>
+          <!-- Flowing water droplets -->
+          <circle cx="220" cy="70" r="5.5" fill="#0ea5e9" opacity=".85">
+            <animate attributeName="cy"      values="65;268;65"   dur="2.2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".85;.2;.85"  dur="2.2s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="216" cy="55" r="4" fill="#38bdf8" opacity=".7">
-            <animate attributeName="cy" values="50;240;50" dur="2.2s" begin="-.75s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".7;.15;.7" dur="2.2s" begin="-.75s" repeatCount="indefinite"/>
+          <circle cx="216" cy="50" r="4"   fill="#38bdf8" opacity=".7">
+            <animate attributeName="cy"      values="48;245;48"   dur="2.2s" begin="-.75s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".7;.15;.7"   dur="2.2s" begin="-.75s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="224" cy="95" r="3.5" fill="#7dd3fc" opacity=".6">
-            <animate attributeName="cy" values="90;265;90" dur="2.2s" begin="-1.4s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".6;.1;.6" dur="2.2s" begin="-1.4s" repeatCount="indefinite"/>
+          <circle cx="224" cy="92" r="3.5" fill="#7dd3fc" opacity=".6">
+            <animate attributeName="cy"      values="88;262;88"   dur="2.2s" begin="-1.4s"  repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".6;.1;.6"    dur="2.2s" begin="-1.4s"  repeatCount="indefinite"/>
           </circle>
 
-          <!-- ── PRESSURE GAUGE on right branch ── -->
+          <!-- Pressure gauge -->
           <circle cx="332" cy="282" r="25" fill="url(#stg)" stroke="rgba(200,119,58,.3)" stroke-width="1.5"/>
           <circle cx="332" cy="282" r="18" fill="rgba(6,14,30,.92)"/>
-          <!-- Gauge tick marks -->
           <line x1="332" y1="266" x2="332" y2="271" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
           <line x1="321" y1="269" x2="324" y2="273" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
           <line x1="343" y1="269" x2="340" y2="273" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
           <line x1="318" y1="280" x2="323" y2="280" stroke="rgba(255,255,255,.2)"  stroke-width="1.5"/>
           <line x1="341" y1="280" x2="346" y2="280" stroke="rgba(255,255,255,.2)"  stroke-width="1.5"/>
-          <!-- Gauge needle -->
           <line x1="332" y1="282" x2="340" y2="271" stroke="#c8773a" stroke-width="2" stroke-linecap="round">
             <animateTransform attributeName="transform" type="rotate"
               values="-20 332 282; 10 332 282; -20 332 282"
@@ -642,86 +636,53 @@
           </line>
           <circle cx="332" cy="282" r="3.5" fill="#c8773a"/>
 
-          <!-- ── FLAME at bottom right ── -->
+          <!-- Flame -->
           <g transform="translate(390, 418)">
             <ellipse cx="15" cy="10" rx="14" ry="10" fill="rgba(200,119,58,.2)" filter="url(#blur4)"/>
-            <!-- Outer flame -->
             <path d="M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z" fill="#c8773a" opacity=".9">
               <animate attributeName="d"
-                values="M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z;
-                        M7 14 Q9 3 15 0 Q12 9 21 4 Q23 12 17 18 Q11 21 7 14Z;
-                        M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z"
+                values="M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z;M7 14 Q9 3 15 0 Q12 9 21 4 Q23 12 17 18 Q11 21 7 14Z;M6 14 Q8 4 15 0 Q13 8 20 5 Q22 12 17 18 Q12 21 6 14Z"
                 dur=".55s" repeatCount="indefinite"/>
             </path>
-            <!-- Inner flame (hot core) -->
             <path d="M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z" fill="#fcd34d" opacity=".85">
               <animate attributeName="d"
-                values="M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z;
-                        M10 14 Q12 6 15 3 Q13 10 19 6 Q20 12 16 17 Q11 19 10 14Z;
-                        M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z"
+                values="M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z;M10 14 Q12 6 15 3 Q13 10 19 6 Q20 12 16 17 Q11 19 10 14Z;M10 14 Q11 7 15 3 Q14 9 18 7 Q19 12 16 17 Q12 19 10 14Z"
                 dur=".55s" repeatCount="indefinite"/>
             </path>
           </g>
 
-          <!-- ── FAUCET at bottom left ── -->
-          <!-- Faucet body -->
+          <!-- Faucet -->
           <rect x="9" y="393" width="60" height="12" rx="5" fill="url(#stg)" stroke="rgba(200,119,58,.2)" stroke-width="1"/>
-          <!-- Handle -->
           <rect x="26" y="381" width="12" height="14" rx="5" fill="#5b7290"/>
-          <rect x="22" y="378" width="20" height="7" rx="3.5" fill="#4a6180"/>
-          <!-- Water stream -->
+          <rect x="22" y="378" width="20" height="7"  rx="3.5" fill="#4a6180"/>
           <ellipse cx="39" cy="410" rx="3.5" ry="5" fill="#0ea5e9" opacity=".7">
-            <animate attributeName="ry" values="5;9;5" dur="1.4s" repeatCount="indefinite"/>
-            <animate attributeName="cy"  values="410;415;410" dur="1.4s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".7;.4;.7" dur="1.4s" repeatCount="indefinite"/>
-          </ellipse>
-          <ellipse cx="39" cy="422" rx="2.5" ry="3.5" fill="#38bdf8" opacity=".5">
-            <animate attributeName="cy"  values="422;430;422" dur="1.4s" begin="-.3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values=".5;.1;.5" dur="1.4s" begin="-.3s" repeatCount="indefinite"/>
+            <animate attributeName="ry"      values="5;9;5"        dur="1.4s" repeatCount="indefinite"/>
+            <animate attributeName="cy"      values="410;415;410"  dur="1.4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".7;.4;.7"     dur="1.4s" repeatCount="indefinite"/>
           </ellipse>
 
-          <!-- ── WRENCH ICON floating upper right ── -->
-          <g transform="translate(326, 50) rotate(40 18 18)" opacity=".55">
+          <!-- Steam wisps -->
+          <path d="M230 42 Q235 30 230 18" stroke="#bae6fd" stroke-width="2" stroke-linecap="round" fill="none" opacity=".35">
+            <animate attributeName="opacity" values=".35;0;.35" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="d" values="M230 42 Q235 30 230 18;M230 42 Q238 28 232 14;M230 42 Q235 30 230 18" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <path d="M220 42 Q215 30 220 16" stroke="#bae6fd" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".25">
+            <animate attributeName="opacity" values=".25;0;.25" dur="2s" begin="-.6s" repeatCount="indefinite"/>
+          </path>
+
+          <!-- Floating wrench -->
+          <g transform="translate(326, 50) rotate(40 18 18)" opacity=".5">
             <rect x="14" y="10" width="8" height="28" rx="4" fill="url(#stg)"/>
             <circle cx="18" cy="8" r="10" stroke="#768fa8" stroke-width="3.5" fill="rgba(8,20,42,.5)"/>
             <circle cx="18" cy="8" r="4"  fill="#768fa8"/>
           </g>
 
-          <!-- ── WATER DROP upper left ── -->
-          <g transform="translate(62,68)" opacity=".55">
-            <path d="M18 38 Q18 52 9 52 Q0 52 0 42 Q0 30 9 18 Q18 30 18 42Z"
-                  fill="#0ea5e9" opacity=".65">
+          <!-- Water drop -->
+          <g transform="translate(62,68)" opacity=".45">
+            <path d="M18 38 Q18 52 9 52 Q0 52 0 42 Q0 30 9 18 Q18 30 18 42Z" fill="#0ea5e9" opacity=".65">
               <animate attributeName="opacity" values=".65;.3;.65" dur="3.5s" repeatCount="indefinite"/>
             </path>
-            <!-- Highlight -->
             <ellipse cx="7" cy="35" rx="3" ry="5" fill="rgba(255,255,255,.25)" transform="rotate(-20 7 35)"/>
-          </g>
-
-          <!-- ── THERMOMETER upper left area ── -->
-          <g transform="translate(72, 130)" opacity=".6">
-            <rect x="6" y="0" width="8" height="36" rx="4" fill="url(#stg)"/>
-            <circle cx="10" cy="40" r="9" fill="url(#stg)"/>
-            <rect x="8" y="14" width="4" height="22" rx="2" fill="#e74c3c" opacity=".8">
-              <animate attributeName="height" values="22;28;22" dur="3s" repeatCount="indefinite"/>
-              <animate attributeName="y" values="14;8;14" dur="3s" repeatCount="indefinite"/>
-            </rect>
-            <circle cx="10" cy="40" r="5.5" fill="#e74c3c" opacity=".9"/>
-          </g>
-
-          <!-- ── STEAM wisps from pipe joints ── -->
-          <g opacity=".4">
-            <path d="M230 42 Q235 30 230 18" stroke="#bae6fd" stroke-width="2" stroke-linecap="round" fill="none">
-              <animate attributeName="opacity" values=".4;0;.4" dur="2s" repeatCount="indefinite"/>
-              <animate attributeName="d"
-                values="M230 42 Q235 30 230 18;M230 42 Q238 28 232 14;M230 42 Q235 30 230 18"
-                dur="2s" repeatCount="indefinite"/>
-            </path>
-            <path d="M220 42 Q215 30 220 16" stroke="#bae6fd" stroke-width="1.5" stroke-linecap="round" fill="none">
-              <animate attributeName="opacity" values=".3;0;.3" dur="2s" begin="-.6s" repeatCount="indefinite"/>
-              <animate attributeName="d"
-                values="M220 42 Q215 30 220 16;M220 42 Q213 28 218 12;M220 42 Q215 30 220 16"
-                dur="2s" begin="-.6s" repeatCount="indefinite"/>
-            </path>
           </g>
         </svg>
       </div>
@@ -729,7 +690,7 @@
   </div>
 </section>
 
-<!-- ── URGENCY STRIP ─────────────────────────────────────────── -->
+<!-- ── URGENCY STRIP ─── -->
 <div class="ustrip">
   <span>🔧 <strong>Now Available</strong></span>
   <span class="ustrip-sep">|</span>
@@ -738,7 +699,7 @@
   <span>Same-day emergency dispatch · no after-hours surcharge</span>
 </div>
 
-<!-- ── SERVICES ──────────────────────────────────────────────── -->
+<!-- ── SERVICES ─── -->
 <section class="svcs" id="services">
   <div class="ct">
     <div class="slabel">What We Do</div>
@@ -747,54 +708,42 @@
     <div class="svcs-grid">
 
       <div class="sc rv d1">
-        <div class="sci">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
-        </div>
+        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div>
         <div class="scn">Emergency Plumbing</div>
         <div class="scd">Burst pipes, flooding, no water — we pick up 24/7 and dispatch fast. No after-hours upcharge, ever.</div>
         <div class="sc-bar"></div>
       </div>
 
       <div class="sc rv d2">
-        <div class="sci">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22a8 8 0 100-16 8 8 0 000 16z"/><path d="M12 8v4l3 3"/><path d="M5 3L3 5M19 3l2 2"/></svg>
-        </div>
+        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22a8 8 0 100-16 8 8 0 000 16z"/><path d="M12 8v4l3 3"/><path d="M5 3L3 5M19 3l2 2"/></svg></div>
         <div class="scn">Water Heaters</div>
         <div class="scd">Tank and tankless supply, install, and annual flush. Same-day hot water restoration when yours fails.</div>
         <div class="sc-bar"></div>
       </div>
 
       <div class="sc rv d3">
-        <div class="sci">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h6"/></svg>
-        </div>
+        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h10M7 11h6"/></svg></div>
         <div class="scn">Heating Systems</div>
         <div class="scd">Forced-air, in-floor radiant, and boiler work. We install, maintain, and repair the full range.</div>
         <div class="sc-bar"></div>
       </div>
 
       <div class="sc rv d4">
-        <div class="sci">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22V12"/><path d="M5 12H2a10 10 0 0020 0h-3"/><path d="M12 2a5 5 0 00-5 5c0 2.5 2 4.5 4 6h2c2-1.5 4-3.5 4-6a5 5 0 00-5-5z"/></svg>
-        </div>
+        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22V12"/><path d="M5 12H2a10 10 0 0020 0h-3"/><path d="M12 2a5 5 0 00-5 5c0 2.5 2 4.5 4 6h2c2-1.5 4-3.5 4-6a5 5 0 00-5-5z"/></svg></div>
         <div class="scn">Drain Clearing</div>
         <div class="scd">Kitchen, bathroom, and main sewer lines. Camera inspection available — see the problem, fix it once.</div>
         <div class="sc-bar"></div>
       </div>
 
       <div class="sc rv d5">
-        <div class="sci">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 7v4l2 2"/></svg>
-        </div>
+        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 7v4l2 2"/></svg></div>
         <div class="scn">Leak Detection</div>
         <div class="scd">Non-invasive tracing behind walls and under slabs. Find it before it becomes structural damage.</div>
         <div class="sc-bar"></div>
       </div>
 
       <div class="sc rv d6">
-        <div class="sci">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-        </div>
+        <div class="sci"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
         <div class="scn">Pipe Repair &amp; Repiping</div>
         <div class="scd">Corroded, cracked, or aged supply lines? Full or partial repiping with modern materials, on schedule.</div>
         <div class="sc-bar"></div>
@@ -804,7 +753,54 @@
   </div>
 </section>
 
-<!-- ── STATS ─────────────────────────────────────────────────── -->
+<!-- ── ABOUT / PHOTO SPLIT ─── -->
+<section class="about" id="about">
+  <div class="ct">
+    <div class="about-inner rv">
+      <!-- Real photo: trades work in progress -->
+      <div class="about-photo">
+        <img
+          src="https://images.unsplash.com/photo-1607400201515-c2c41c07d307?auto=format&fit=crop&w=900&q=85"
+          alt="M&R tradesperson sealing and insulating on a job site"
+          loading="lazy"
+        />
+      </div>
+      <!-- Copy column -->
+      <div class="about-copy">
+        <div class="slabel">The M&amp;R Difference</div>
+        <h2 class="stitle">Local trades,<br/>done right.</h2>
+        <p class="ssub">
+          We're not a franchise call centre. We're a Langford-based team with over 15 years
+          fixing the pipes and heating systems of Greater Victoria — and we treat every job like it's our own home.
+        </p>
+        <ul class="promise-list">
+          <li class="promise-item">
+            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="promise-text"><strong>Real people answer the phone</strong> — not a dispatcher three provinces away.</div>
+          </li>
+          <li class="promise-item">
+            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="promise-text"><strong>Fully stocked service vans</strong> — most repairs done in a single visit.</div>
+          </li>
+          <li class="promise-item">
+            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="promise-text"><strong>No price gouging on emergency calls</strong> — upfront quotes before we start.</div>
+          </li>
+          <li class="promise-item">
+            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="promise-text"><strong>BC Red Seal certified</strong> — licensed and fully insured for residential &amp; commercial.</div>
+          </li>
+          <li class="promise-item">
+            <div class="promise-dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="promise-text"><strong>We clean up when we leave</strong> — job site tidier than we found it, every time.</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS (photo under dark overlay) ─── -->
 <section class="stats">
   <div class="ct">
     <div class="stats-g">
@@ -828,70 +824,44 @@
   </div>
 </section>
 
-<!-- ── CONTACT + FORM ─────────────────────────────────────────── -->
+<!-- ── CONTACT + FORM ─── -->
 <section class="contacts" id="contact">
   <div class="ct">
     <div class="contacts-inner">
-
-      <!-- Left: info -->
+      <!-- Info side -->
       <div class="rvl">
         <div class="slabel">Get In Touch</div>
-        <h2 class="stitle">Ready when you need us.</h2>
+        <h2 class="stitle">Ready when<br/>you need us.</h2>
         <p class="ssub" style="margin-bottom:1.5rem">
           Emergency at 2 am or a planned install next month — reach out and we respond fast.
-          No hold music. Real people answering.
+          No hold music. No call centre. Real people answering.
         </p>
         <ul class="clist">
           <li class="ci">
-            <div class="ciw">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
-            </div>
-            <div>
-              <div class="clbl">Phone (24/7)</div>
-              <div class="cval"><a href="tel:2505072924">250-507-2924</a></div>
-            </div>
+            <div class="ciw"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.62a19.79 19.79 0 01-3-8.59A2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.66-.66a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div>
+            <div><div class="clbl">Phone (24/7)</div><div class="cval"><a href="tel:2505072924">250-507-2924</a></div></div>
           </li>
           <li class="ci">
-            <div class="ciw">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </div>
-            <div>
-              <div class="clbl">Email</div>
-              <div class="cval"><a href="mailto:m.phillips@shaw.ca">m.phillips@shaw.ca</a></div>
-            </div>
+            <div class="ciw"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div><div class="clbl">Email</div><div class="cval"><a href="mailto:m.phillips@shaw.ca">m.phillips@shaw.ca</a></div></div>
           </li>
           <li class="ci">
-            <div class="ciw">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            </div>
-            <div>
-              <div class="clbl">Location</div>
-              <div class="cval">2920 Mount Wells Drive, Langford BC V9B 4S1</div>
-            </div>
+            <div class="ciw"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="clbl">Location</div><div class="cval">2920 Mount Wells Drive, Langford BC V9B 4S1</div></div>
           </li>
         </ul>
       </div>
-
-      <!-- Right: form -->
+      <!-- Form side -->
       <div class="rvr">
         <div class="fcard">
           <div class="ft">Request a Free Quote</div>
           <div class="fs">We respond same day — usually within the hour.</div>
           <form onsubmit="return handleForm(event)">
             <div class="frow">
-              <div class="fg">
-                <label class="fl">First Name</label>
-                <input type="text" class="fi" placeholder="Sarah" required/>
-              </div>
-              <div class="fg">
-                <label class="fl">Last Name</label>
-                <input type="text" class="fi" placeholder="Thompson" required/>
-              </div>
+              <div class="fg"><label class="fl">First Name</label><input type="text" class="fi" placeholder="Sarah" required/></div>
+              <div class="fg"><label class="fl">Last Name</label><input type="text" class="fi" placeholder="Thompson" required/></div>
             </div>
-            <div class="fg">
-              <label class="fl">Phone Number</label>
-              <input type="tel" class="fi" placeholder="250-555-0100" required/>
-            </div>
+            <div class="fg"><label class="fl">Phone Number</label><input type="tel" class="fi" placeholder="250-555-0100" required/></div>
             <div class="fg">
               <label class="fl">Service Needed</label>
               <select class="fsel" required>
@@ -913,56 +883,58 @@
           </form>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<!-- ── FOOTER ─── -->
 <footer>
   <div class="flogo"><span>M&amp;R</span> Plumbing &amp; Heating</div>
   <div class="ftag">Langford, BC &nbsp;·&nbsp; BC Licensed &amp; Insured &nbsp;·&nbsp; 24/7 Emergency Service</div>
   <div class="flinks">
     <a href="#services">Services</a>
+    <a href="#about">About</a>
     <a href="tel:2505072924">250-507-2924</a>
     <a href="mailto:m.phillips@shaw.ca">Email Us</a>
     <a href="#contact">Free Quote</a>
   </div>
-  <div class="fcopy">© 2026 M&amp;R Plumbing and Heating Ltd. &nbsp;·&nbsp; 2920 Mount Wells Drive, Langford BC V9B 4S1</div>
+  <div class="fcopy">
+    © 2026 M&amp;R Plumbing and Heating Ltd. &nbsp;·&nbsp; 2920 Mount Wells Drive, Langford BC V9B 4S1<br/>
+    <span style="opacity:.55">Photos: Unsplash (used under the Unsplash License, free for commercial use)</span>
+  </div>
 </footer>
 
 <script>
-/* ── WATER DROP PARTICLES ────────────────────────────────────── */
+/* Water drop particles */
 (function () {
   const c = document.getElementById('drops');
-  for (let i = 0; i < 22; i++) {
+  for (let i = 0; i < 20; i++) {
     const d = document.createElement('div');
     d.className = 'drop';
-    const w = 1 + Math.random() * 2;
+    const w = 1 + Math.random() * 1.8;
     d.style.cssText = [
-      'left:'              + (Math.random() * 100) + 'vw',
-      'width:'             + w + 'px',
-      'height:'            + (w * 4 + Math.random() * 8) + 'px',
-      'animation-duration:'+ (5 + Math.random() * 9) + 's',
-      'animation-delay:'   + (Math.random() * 12) + 's',
+      'left:'               + (Math.random() * 100) + 'vw',
+      'width:'              + w + 'px',
+      'height:'             + (w * 4 + Math.random() * 8) + 'px',
+      'animation-duration:' + (5 + Math.random() * 9) + 's',
+      'animation-delay:'    + (Math.random() * 12) + 's',
     ].join(';');
     c.appendChild(d);
   }
 })();
 
-/* ── SCROLL REVEAL + COUNTER ─────────────────────────────────── */
+/* Scroll reveal + counters */
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (!e.isIntersecting) return;
     e.target.classList.add('vis');
-    /* counter animation */
-    const el = e.target.querySelector('[data-target]') || (e.target.dataset.target ? e.target : null);
+    const el = e.target.querySelector('[data-target]');
     if (el && !el.dataset.done) {
       el.dataset.done = '1';
       const target = +el.dataset.target;
       const suffix = el.dataset.suffix || '+';
-      const dur    = 1800;
-      const t0     = performance.now();
+      const t0 = performance.now();
+      const dur = 1900;
       (function step(now) {
         const p = Math.min((now - t0) / dur, 1);
         const v = Math.round((1 - Math.pow(1 - p, 3)) * target);
@@ -976,7 +948,7 @@ const io = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.rv, .rvl, .rvr').forEach(el => io.observe(el));
 
-/* ── FORM SUBMIT ─────────────────────────────────────────────── */
+/* Form */
 function handleForm(e) {
   e.preventDefault();
   const btn = e.target.querySelector('.fbtn');
